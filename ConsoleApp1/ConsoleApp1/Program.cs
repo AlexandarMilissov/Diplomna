@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sockets.Plugin;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace ConsoleApp1
     {
         const int PORT = 4210;
         const int keepAliveTimer = 2000;
+        UdpSocketClient client = new UdpSocketClient();
         public struct UDPState
         {
             public UdpClient u;
@@ -57,6 +59,7 @@ namespace ConsoleApp1
             switch(info[0])
             {
                 case "0":
+                    Console.WriteLine("received discover message?");
                     break;
                 case "1":
                     ReceivedDiscoverReply(e, info.Skip(1).ToList());
