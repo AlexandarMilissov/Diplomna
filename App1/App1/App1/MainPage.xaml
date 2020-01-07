@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              x:Class="App1.MainPage">
 
-    <StackLayout>
+    <StackLayout x:Name="Layout">
         <!-- Place new controls here -->
         <Label 
             Text="Welcome to Xamarin.Forms!" 

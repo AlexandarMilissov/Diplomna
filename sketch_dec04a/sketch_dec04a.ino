@@ -3,8 +3,8 @@
 
 #define keepAliveTimer 2000
 
-const char* ssid = "A1_0544";
-const char* password = "48575443E6A3AE9D";
+const char* ssid = "elsys-cab34";
+const char* password = "elsys-bg.org";
 
 WiFiUDP Udp;
 IPAddress BindIP (255,255,255,255);
@@ -170,9 +170,7 @@ void BindDropReply()
 void SendDiscoverReply()
 {
   Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+  Serial.println(Udp.remotePort());
   Udp.write("1*");
   Udp.endPacket();
-}
-void SendKeepAlive()
-{
 }

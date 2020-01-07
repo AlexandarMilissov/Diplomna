@@ -59,7 +59,9 @@ namespace ConsoleApp1
             switch(info[0])
             {
                 case "0":
-                    Console.WriteLine("received discover message?");
+                    Console.WriteLine($"received discover message from {e.ToString()}");
+                    byte[] send_buffer = Encoding.ASCII.GetBytes("1*");
+                    s.u.Send(send_buffer, send_buffer.Length, IPAddress.Broadcast.ToString(), PORT);
                     break;
                 case "1":
                     ReceivedDiscoverReply(e, info.Skip(1).ToList());
@@ -115,7 +117,7 @@ namespace ConsoleApp1
         }
         static void SendDiscoverMessage()
         {
-            byte[] send_buffer = Encoding.ASCII.GetBytes("0");
+            byte[] send_buffer = Encoding.ASCII.GetBytes("0*");
             s.u.Send(send_buffer, send_buffer.Length, new IPEndPoint(IPAddress.Broadcast, PORT));
         }
 
