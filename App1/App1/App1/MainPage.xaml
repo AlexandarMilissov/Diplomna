@@ -11,11 +11,23 @@
         <Label 
             Text="Welcome to Xamarin.Forms!" 
             HorizontalOptions="Center"
+            />
+        <Label 
+            Text="Welcome to Xamarin.Forms!" 
+            HorizontalOptions="Center"
+            />
+        <Label 
+            Text="Welcome to Xamarin.Forms!" 
+            HorizontalOptions="Center"
             x:Name="label"
             />
         <Button 
             Text="Discover"
             Clicked="Discover_Button_Clicked" 
+            HorizontalOptions="Center"/>
+        <Button 
+            Text="Bind"
+            Clicked="Bind_Button_Clicked" 
             HorizontalOptions="Center"/>
     </StackLayout>
 

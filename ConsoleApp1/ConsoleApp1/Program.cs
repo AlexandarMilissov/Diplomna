@@ -59,9 +59,6 @@ namespace ConsoleApp1
             switch(info[0])
             {
                 case "0":
-                    Console.WriteLine($"received discover message from {e.ToString()}");
-                    byte[] send_buffer = Encoding.ASCII.GetBytes("1*");
-                    s.u.Send(send_buffer, send_buffer.Length, IPAddress.Broadcast.ToString(), PORT);
                     break;
                 case "1":
                     ReceivedDiscoverReply(e, info.Skip(1).ToList());
