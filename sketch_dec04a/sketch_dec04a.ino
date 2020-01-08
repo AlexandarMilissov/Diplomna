@@ -3,14 +3,13 @@
 
 #define keepAliveTimer 2000
 
-const char* ssid = "elsys-cab34";
-const char* password = "elsys-bg.org";
+const char* ssid = "DESKTOP";
+const char* password = "12345678";
 
 WiFiUDP Udp;
 IPAddress BindIP (255,255,255,255);
 bool isBinded = false;
-int Port = 0;
-unsigned int localUdpPort = 4210;  // local port to listen on
+unsigned int PORT = 4210;  // local port to listen on
 char incomingPacket[255];  // buffer for incoming packets
 
 unsigned long LastTimeSend = 0;
@@ -32,8 +31,8 @@ void setup()
   }
   Serial.println(" connected");
 
-  Udp.begin(localUdpPort);
-  Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), localUdpPort);
+  Udp.begin(PORT);
+  Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), PORT);
 }
 
 
@@ -45,7 +44,7 @@ void loop()
     {
       LastTimeSend = millis();
       Serial.printf("keepalive send");
-      Udp.beginPacket(BindIP, Port);
+      Udp.beginPacket(BindIP, PORT);
       Udp.write("a*");
       Udp.endPacket();
     }
@@ -92,13 +91,13 @@ void loop()
     {
       case '0':
         Serial.printf("Incoming Discover from: %s\n ", Udp.remoteIP().toString().c_str());
+        Serial.printf("DATA: %s\n ", incomingPacket);
         SendDiscoverReply();
         break;
       case '2':
         Serial.printf("Incoming Bind Request from: %s\n ", Udp.remoteIP().toString().c_str());
         if (isBinded == false || BindIP == Udp.remoteIP())
         {
-          Port = Udp.remotePort();
           BindIP = Udp.remoteIP();
           isBinded = true;
         }
@@ -164,13 +163,15 @@ void BindDropReply()
 {
   Serial.printf("Accepted Bind Dropped\n");
   Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-  Udp.write("5*mehashdbal");
+  Udp.write("5*");
   Udp.endPacket();
 }
 void SendDiscoverReply()
 {
-  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
-  Serial.println(Udp.remotePort());
+  Udp.beginPacket(Udp.remoteIP(), PORT);
   Udp.write("1*");
   Udp.endPacket();
+}
+void SendKeepAlive()
+{
 }
