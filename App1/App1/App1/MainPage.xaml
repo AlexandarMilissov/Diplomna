@@ -8,14 +8,7 @@
 
     <StackLayout x:Name="Layout">
         <!-- Place new controls here -->
-        <Label 
-            Text="Welcome to Xamarin.Forms!" 
-            HorizontalOptions="Center"
-            />
-        <Label 
-            Text="Welcome to Xamarin.Forms!" 
-            HorizontalOptions="Center"
-            />
+       
         <Label 
             Text="Welcome to Xamarin.Forms!" 
             HorizontalOptions="Center"
@@ -24,11 +17,16 @@
         <Button 
             Text="Discover"
             Clicked="Discover_Button_Clicked" 
-            HorizontalOptions="Center"/>
-        <Button 
-            Text="Bind"
-            Clicked="Bind_Button_Clicked" 
-            HorizontalOptions="Center"/>
+            HorizontalOptions="Center"
+            />
+
+        <ListView >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="textttttt" Detail="TextCell Detail"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 
 </ContentPage>
