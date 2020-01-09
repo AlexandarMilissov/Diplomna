@@ -10,7 +10,7 @@ namespace App1
         public string DisplayName { get; set; }
         public IPAddress IPAddress{ get; set; }
 
-        public string ToString()
+        public override string ToString()
         {
             return DisplayName;
         }
