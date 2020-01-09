@@ -18,21 +18,25 @@ namespace App1
         const int PORT = 4210;
         UdpSocketClient client = new UdpSocketClient();
         UdpSocketReceiver udpReceiver = new UdpSocketReceiver();
-        static HashSet<IPAddress> knownToasters = new HashSet<IPAddress>();
+        static HashSet<Toaster> knownToasters = new HashSet<Toaster>();
         public MainPage()
         {
-                
+
+            Toaster t = new Toaster { DisplayName = "test" };
+            knownToasters.Add(t);
+
             this.InitializeComponent();
             StartUDPReceive();
+            List.ItemsSource = knownToasters;
         }
 
         async void StartUDPReceive()
         {
             udpReceiver.MessageReceived += (sender, args) =>
             {
-                List<string> info = data.Split('*').ToList();
                 string data = Encoding.UTF8.GetString(args.ByteData, 0, args.ByteData.Length);
 
+                List<string> info = data.Split('*').ToList();
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -82,9 +86,11 @@ namespace App1
             throw new NotImplementedException();
         }
 
-        static void ReceivedDiscoverReply(IPAddress tosterIP, List<string> UDPcontent)
+        static void ReceivedDiscoverReply(IPAddress toasterIP, List<string> UDPcontent)
         {
-            knownToasters.Add(tosterIP);
+            Toaster t = new Toaster { IPAddress = toasterIP, DisplayName = UDPcontent[0] };
+
+            knownToasters.Add(t);
             Console.WriteLine(string.Join(" ", UDPcontent));
         }
         static void ReceivedInvalidUDP(List<string> info)
@@ -93,6 +99,11 @@ namespace App1
         }
         private async void Discover_Button_Clicked(object sender, EventArgs e)
         {
+            Toaster t = new Toaster { DisplayName = "test" };
+            knownToasters.Add(t);
+
+
+
             var msg = Encoding.UTF8.GetBytes("0*");
             await client.SendToAsync(msg, IPAddress.Broadcast.ToString(), PORT);
         }
