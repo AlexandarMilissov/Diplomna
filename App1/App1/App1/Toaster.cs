@@ -5,7 +5,7 @@ using System.Net;
 
 namespace App1
 {
-    class Toaster
+    public class Toaster
     {
         public string DisplayName { get; set; }
         public IPAddress IPAddress{ get; set; }

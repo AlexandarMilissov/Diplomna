@@ -3,14 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:App1"
              mc:Ignorable="d"
              x:Class="App1.MainPage">
 
+    <ContentPage.BindingContext>
+        <local:ViewModel/>
+    </ContentPage.BindingContext>
+    
+    
+    
+    
     <StackLayout x:Name="Layout">
         <!-- Place new controls here -->
-       
+        <Entry Text="{Binding Name}" />
         <Label 
-            Text="Welcome to Xamarin.Forms!" 
+            Text="{Binding dfuck}" 
             HorizontalOptions="Center"
             x:Name="label"
             />
@@ -22,6 +30,7 @@
 
         <ListView x:Name="List"
             HorizontalOptions="Center"
+            BindingContext="x:Reference "
                   >
         </ListView>
     </StackLayout>
