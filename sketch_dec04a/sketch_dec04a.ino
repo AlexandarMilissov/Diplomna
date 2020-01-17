@@ -3,8 +3,8 @@
 
 #define keepAliveTimer 2000
 
-const char* ssid = "DESKTOP";
-const char* password = "12345678";
+const char* ssid = "ASUS";
+const char* password = "PowerNetwork";
 
 WiFiUDP Udp;
 IPAddress BindIP (255,255,255,255);
@@ -43,7 +43,7 @@ void loop()
     if(millis() - LastTimeSend>keepAliveTimer)
     {
       LastTimeSend = millis();
-      Serial.printf("keepalive send");
+      Serial.printf("keepalive send\n");
       Udp.beginPacket(BindIP, PORT);
       Udp.write("a*");
       Udp.endPacket();
@@ -92,6 +92,7 @@ void loop()
       case '0':
         Serial.printf("Incoming Discover from: %s\n ", Udp.remoteIP().toString().c_str());
         Serial.printf("DATA: %s\n ", incomingPacket);
+        Serial.printf("Port:%s\n",Udp.remotePort());
         SendDiscoverReply();
         break;
       case '2':

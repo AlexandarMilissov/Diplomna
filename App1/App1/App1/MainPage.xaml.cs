@@ -102,8 +102,6 @@ namespace App1
         }
         private async void Discover_Button_Clicked(object sender, EventArgs e)
         {
-            Toaster t = new Toaster { DisplayName = "bvklhsbadvlihsbvl" };
-            knownToasters.Add(t);
 
 
             var msg = Encoding.UTF8.GetBytes("0*");
