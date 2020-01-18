@@ -4,11 +4,13 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="App1.ToasterBindedPage">
+             x:Class="App1.ToasterBindedPage"
+             NavigationPage.HasNavigationBar="false">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout
-                VerticalOptions="StartAndExpand">
+            <StackLayout VerticalOptions="StartAndExpand">
+                <Button Text="Pick File" Clicked="SelextImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Label Text="File Is :" x:Name="lbl"/>
             </StackLayout>
             <Button Text="Back"
                 VerticalOptions="End" 

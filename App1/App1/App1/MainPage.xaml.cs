@@ -27,7 +27,8 @@ namespace App1
         }
         public async void UpdateView()
         {
-            await Navigation.PushAsync(new ToasterBindedPage(communication), false);
+            ToasterBindedPage t = new ToasterBindedPage(communication);
+            await Navigation.PushModalAsync(t, false);
         }
         private void Discover_Button_Clicked(object sender, EventArgs e)
         {

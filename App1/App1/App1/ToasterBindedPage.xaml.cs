@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Plugin.FilePicker;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,24 @@ namespace App1
         public ToasterBindedPage(Communication c)
         {
             communication = c;
+            communication.currentPage = this;
             InitializeComponent();
         }
 
         private async void BackButtonClicked(object sender, EventArgs e)
         {
             communication.SendBindDropped();
-            await Navigation.PopAsync();
+            await Navigation.PopModalAsync();
+        }
+        private async void SelextImageButtonClicked(object sender, EventArgs e)
+        {
+            string[] fileTypes = null;
+            var file = await CrossFilePicker.Current.PickFile(fileTypes);
+
+            if (file != null)
+            {
+                lbl.Text = file.FileName;
+            }
         }
     }
 }

@@ -24,9 +24,12 @@ namespace App1
         Stopwatch keepAliveWatch = new Stopwatch();
         Toaster bindedToaster;
         MainPage mainPage;
+
+        public ContentPage currentPage;
         public Communication(MainPage m)
         {
             mainPage = m;
+            currentPage = m;
         }
         public async void StartUDPReceive()
         {
@@ -93,6 +96,7 @@ namespace App1
             if (info[0] == "1")
             {
                 bindedToaster = mainPage.viewModel.KnownToasters.Where(x => x.IPAddress.Equals(ipAddress)).First();
+                bindedToaster.BindActive = true;
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     mainPage.UpdateView();
@@ -106,7 +110,7 @@ namespace App1
         }
         void ReceivedBindDroppedAcknowledge()
         {
-            BindDropped();
+            BindDropped(false);
         }
         void KeepAliveReceived()
         {
@@ -129,7 +133,10 @@ namespace App1
         {
             byte[] msg = Encoding.ASCII.GetBytes("4*");
             await client.SendToAsync(msg, bindedToaster.IPAddress.ToString(), PORTS);
-            bindedToaster.BindActive = false;
+            if(bindedToaster != null)
+            {
+                bindedToaster.BindActive = false;
+            }
         }
         async void SendKeepAlive(Object stateInfo)
         {
@@ -138,21 +145,25 @@ namespace App1
                 SendBindDropped();
                 return;
             }
-            if (keepAliveWatch.ElapsedMilliseconds > 4 * keepAliveTimer)
+            else if (keepAliveWatch.ElapsedMilliseconds > 4 * keepAliveTimer)
             {
                 SendBindDropped();
-                BindDropped();
+                BindDropped(true);
                 return;
             }
             byte[] msg = Encoding.ASCII.GetBytes("a*");
             await client.SendToAsync(msg, bindedToaster.IPAddress.ToString(), PORTS);
         }
-        void BindDropped()
+        void BindDropped(bool TimedOut)
         {
             bindedToaster.BindActive = false;
             bindedToaster = null;
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             timer.Dispose();
+            if (TimedOut)
+            {
+                currentPage.Navigation.PopModalAsync();
+            }
         }
     }
 }
