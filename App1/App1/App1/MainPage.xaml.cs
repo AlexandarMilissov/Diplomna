@@ -1,6 +1,7 @@
 ﻿using Sockets.Plugin;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
@@ -15,97 +16,27 @@ namespace App1
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        const int PORT = 4210;
-        UdpSocketClient client = new UdpSocketClient();
-        UdpSocketReceiver udpReceiver = new UdpSocketReceiver();
-        static HashSet<Toaster> knownToasters = new HashSet<Toaster>();
+        public ViewModel viewModel = new ViewModel();
+        Communication communication;
         public MainPage()
         {
-
-            Toaster t = new Toaster { DisplayName = "test" };
-            knownToasters.Add(t);
+            BindingContext = viewModel;
             this.InitializeComponent();
-
-
-            //List.BindingContext = t;
-
-            StartUDPReceive();
-            List.ItemsSource = knownToasters;
+            communication = new Communication(this);
+            communication.StartUDPReceive();
         }
-
-        async void StartUDPReceive()
+        public async void UpdateView()
         {
-            udpReceiver.MessageReceived += (sender, args) =>
-            {
-                string data = Encoding.UTF8.GetString(args.ByteData, 0, args.ByteData.Length);
-
-                List<string> info = data.Split('*').ToList();
-
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    label.Text = data;
-                });
-                switch (info[0])
-                {
-                    case "0":
-                        break;
-                    case "1":
-                        ReceivedDiscoverReply(IPAddress.Parse(args.RemoteAddress), info.Skip(1).ToList());
-                        break;
-                    case "3":
-                        ReceivedBindReply();
-                        break;
-                    case "5":
-                        ReceivedBindDroppedAcknowledge();
-                        break;
-                    case "7":
-                        break;
-                    case "9":
-                        break;
-                    case "a":
-                        KeepAliveReceived();
-                        break;
-                    default:
-                        ReceivedInvalidUDP(info);
-                        break;
-                };
-            };
-            await udpReceiver.StartListeningAsync(PORT);
+            await Navigation.PushAsync(new ToasterBindedPage(communication), false);
         }
-
-
-        static void KeepAliveReceived()
+        private void Discover_Button_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            communication.SendDiscoverMessage();
         }
-
-        static void ReceivedBindDroppedAcknowledge()
+        private void List_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-        static void ReceivedBindReply()
-        {
-            throw new NotImplementedException();
-        }
-
-        static void ReceivedDiscoverReply(IPAddress toasterIP, List<string> UDPcontent)
-        {
-            Toaster t = new Toaster { IPAddress = toasterIP, DisplayName = UDPcontent[0] };
-
-            knownToasters.Add(t);
-            Console.WriteLine(string.Join(" ", UDPcontent));
-        }
-        static void ReceivedInvalidUDP(List<string> info)
-        {
-            throw new NotImplementedException();
-        }
-        private async void Discover_Button_Clicked(object sender, EventArgs e)
-        {
-
-
-            var msg = Encoding.UTF8.GetBytes("0*");
-            await client.SendToAsync(msg, IPAddress.Broadcast.ToString(), PORT);
+            Toaster t = e.Item as Toaster;
+            communication.SendBindRequest(t);
         }
     }
 }

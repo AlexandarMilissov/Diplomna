@@ -10,9 +10,15 @@ namespace App1
         public string DisplayName { get; set; }
         public IPAddress IPAddress{ get; set; }
 
+        public bool BindActive = false;
         public override string ToString()
         {
             return DisplayName;
+        }
+        public Toaster(string Name, IPAddress ipAddress)
+        {
+            DisplayName = Name;
+            IPAddress = ipAddress;
         }
     }
 }

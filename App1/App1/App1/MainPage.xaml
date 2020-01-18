@@ -7,18 +7,11 @@
              mc:Ignorable="d"
              x:Class="App1.MainPage">
 
-    <ContentPage.BindingContext>
-        <local:ViewModel/>
-    </ContentPage.BindingContext>
-    
-    
-    
-    
+
+
+
     <StackLayout x:Name="Layout">
-        <!-- Place new controls here -->
-        <Entry Text="{Binding Name}" />
         <Label 
-            Text="{Binding dfuck}" 
             HorizontalOptions="Center"
             x:Name="label"
             />
@@ -29,9 +22,18 @@
             />
 
         <ListView x:Name="List"
-            HorizontalOptions="Center"
-            BindingContext="x:Reference "
-                  >
+            ItemsSource="{Binding KnownToasters}"
+                  ItemTapped="List_ItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Vertical">
+                            <Label Text="{Binding DisplayName}"/>
+                            <Label Text="{Binding IPAddress}"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
     </StackLayout>
 

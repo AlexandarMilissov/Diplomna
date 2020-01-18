@@ -9,7 +9,8 @@ const char* password = "PowerNetwork";
 WiFiUDP Udp;
 IPAddress BindIP (255,255,255,255);
 bool isBinded = false;
-unsigned int PORT = 4210;  // local port to listen on
+unsigned int PORTR = 4210;  // local port to listen on
+unsigned int PORTS = 4211;  // local port to send to
 char incomingPacket[255];  // buffer for incoming packets
 
 unsigned long LastTimeSend = 0;
@@ -31,8 +32,8 @@ void setup()
   }
   Serial.println(" connected");
 
-  Udp.begin(PORT);
-  Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), PORT);
+  Udp.begin(PORTR);
+  Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), PORTR);
 }
 
 
@@ -44,7 +45,7 @@ void loop()
     {
       LastTimeSend = millis();
       Serial.printf("keepalive send\n");
-      Udp.beginPacket(BindIP, PORT);
+      Udp.beginPacket(BindIP, PORTS);
       Udp.write("a*");
       Udp.endPacket();
     }
@@ -92,7 +93,7 @@ void loop()
       case '0':
         Serial.printf("Incoming Discover from: %s\n ", Udp.remoteIP().toString().c_str());
         Serial.printf("DATA: %s\n ", incomingPacket);
-        Serial.printf("Port:%s\n",Udp.remotePort());
+        Serial.printf("Port:%d\n",Udp.remotePort());
         SendDiscoverReply();
         break;
       case '2':
@@ -140,13 +141,13 @@ void loop()
 }
 void SendErrorMessage(char* s)
 {
-  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+  Udp.beginPacket(Udp.remoteIP(), PORTS);
   Udp.write(s);
   Udp.endPacket();
 }
 void BindReply(bool b)
 {
-  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+  Udp.beginPacket(Udp.remoteIP(), PORTS);
   if (b)
   {
     Udp.write("3*1");
@@ -163,13 +164,14 @@ void BindReply(bool b)
 void BindDropReply()
 {
   Serial.printf("Accepted Bind Dropped\n");
-  Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
+  Udp.beginPacket(Udp.remoteIP(), PORTS);
   Udp.write("5*");
   Udp.endPacket();
 }
 void SendDiscoverReply()
 {
-  Udp.beginPacket(Udp.remoteIP(), PORT);
+  Udp.beginPacket(Udp.remoteIP(), PORTS);
+  Serial.printf("to port: %d",PORTS);
   Udp.write("1*");
   Udp.endPacket();
 }
