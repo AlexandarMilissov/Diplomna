@@ -64,18 +64,12 @@ void loop()
   int packetSize = Udp.parsePacket();
   
   if (packetSize)
-  {/*
-    int len = Udp.read(incomingPacket, 255);
-    if (packetSize > 255)
-    {
-      SendErrorMessage("message too long");
-      return;
-    }
+  {
+    int len = Udp.read(incomingPacket, 1024);
     if (len > 0)
     {
       incomingPacket[len] = 0;
     }
-*/
     //0 discover
     //1 discover reply
     //2 bind request
@@ -111,7 +105,7 @@ void loop()
         }
         break;
       case '6':
-        Serial.printf("Incoming Image\n");
+        Serial.printf("Incoming Image\n ");
         break;
       case '8':
         Serial.printf("Incoming Draw Command: %s\n ", incomingPacket);
