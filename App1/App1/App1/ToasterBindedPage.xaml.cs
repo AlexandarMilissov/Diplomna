@@ -1,4 +1,6 @@
-﻿using Plugin.FilePicker;
+﻿
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace App1
     public partial class ToasterBindedPage : ContentPage
     {
         Communication communication;
+        SimpleImage imageSelected;
         public ToasterBindedPage(Communication c)
         {
             communication = c;
@@ -28,27 +31,37 @@ namespace App1
             communication.SendBindDropped();
             await Navigation.PopModalAsync();
         }
-        private async void SelextImageButtonClicked(object sender, EventArgs e)
+        private async void SelectImageButtonClicked(object sender, EventArgs e)
         {
             string[] fileTypes =
             {
                 "*.bmp"
             };
-            var file = await CrossFilePicker.Current.PickFile(fileTypes);
-            if(!file.FileName.Split('.').Last().Equals("bmp"))
+            FileData file = await CrossFilePicker.Current.PickFile(fileTypes);
+            if (file==null || (file!=null && !file.FileName.Split('.').Last().Equals("bmp")))
             {
-                file = null;
                 return;
             }
+            imageSelected = FileToSimpleImage(file);
             /*
-            MemoryStream ms = new MemoryStream();
-            Image i = Image.
-            i.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-            byte[] bytes = ms.ToArray();
-            BitArray bitArray = new BitArray(bytes);
-            Debug.WriteLine(bitArray);
+            if (file != null)
+            {
+                lbl.Text = ToDigitString(bitArray);
+            }
             */
+        }
+
+        private void SendImageButtonClicked(object sender, EventArgs e)
+        {
+            if(imageSelected == null)
+            {
+                return;
+            }
+            communication.SendImage(imageSelected);
+        }
+        
+        SimpleImage FileToSimpleImage(FileData file)
+        {
             byte[] b;
             using (var memoryStream = new MemoryStream())
             {
@@ -58,27 +71,61 @@ namespace App1
                 memoryStream.Close();
                 memoryStream.Dispose();
             }
-            byte[] o = b.ToList().Skip(10).Take(4).ToArray();
-            int offset = BitConverter.ToInt32(o, 0); ;
-            byte[] w = b.ToList().Skip(18).Take(4).ToArray();
-            int width = BitConverter.ToInt32(w,0);
-            byte[] h = b.ToList().Skip(22).Take(4).ToArray();
-            int height = BitConverter.ToInt32(h, 0);
-            List<byte> final = b.ToList().Skip(54).ToList();
-            
-            BitArray bitArray = new BitArray(final.ToArray());
 
-            if (file != null)
+            int offset = BitConverter.ToInt32(b.ToList().Skip(10).Take(4).ToArray(), 0);
+            int width = BitConverter.ToInt32(b.ToList().Skip(18).Take(4).ToArray(), 0);
+            int height = BitConverter.ToInt32(b.ToList().Skip(22).Take(4).ToArray(), 0);
+
+            if (width* height > 128 * 8)
             {
-                lbl.Text = ToDigitString(bitArray);
+                return null;
             }
-        }
-        public string ToDigitString(BitArray array)
-        {
-            var builder = new StringBuilder();
-            foreach (var bit in array.Cast<bool>())
-                builder.Append(bit ? "1" : "0");
-            return builder.ToString();
+
+
+
+                List<byte> lb = b.ToList().Skip(offset).ToList();
+            int bytesPerRow = (int)Math.Ceiling(width / 8d);
+            int bytesToSkipEachRow = bytesPerRow % 4;
+            if (bytesToSkipEachRow != 0)
+            {
+                bytesToSkipEachRow = 4 - bytesToSkipEachRow;
+            }
+
+            List<bool> final = new List<bool>();
+            BitArray bitArray;
+
+            List<byte> row;
+            bool[] boolAray;
+            List<bool> boolList;
+            for (int i = 0; i < height; i++)
+            {
+                row = lb.Take(bytesPerRow).ToList();
+                lb.RemoveRange(0, bytesPerRow + bytesToSkipEachRow);
+
+                boolAray = new bool[width];
+                if (width % 8 != 0)
+                {
+                    boolAray = new bool[(8 - width % 8) + width];
+                }
+
+                bitArray = new BitArray(row.ToArray());
+                bitArray.CopyTo(boolAray, 0);
+
+                if (width % 8 != 0)
+                {
+                    boolList = boolAray.ToList();
+                    boolList.RemoveRange(0, 8 - width % 8);
+                }
+                else
+                {
+                    boolList = boolAray.ToList();
+                }
+                final.AddRange(boolList);
+            }
+            bitArray = new BitArray(final.ToArray());
+            bitArray.Not();
+            SimpleImage simpleImage = new SimpleImage(width,height,bitArray);
+            return simpleImage;
         }
     }
 }

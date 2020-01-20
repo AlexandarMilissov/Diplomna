@@ -9,9 +9,12 @@
     <ContentPage.Content>
         <StackLayout>
             <StackLayout VerticalOptions="StartAndExpand">
-                <Button Text="Pick File" Clicked="SelextImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Pick File" Clicked="SelectImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Send Image" Clicked="SendImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Label Text="File Is :" x:Name="lbl"/>
-            </StackLayout>
+                <StackLayout>
+                </StackLayout>
+                </StackLayout>
             <Button Text="Back"
                 VerticalOptions="End" 
                 HorizontalOptions="Start"

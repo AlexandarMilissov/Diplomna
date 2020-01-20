@@ -1,5 +1,6 @@
 ﻿using Sockets.Plugin;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -30,6 +31,18 @@ namespace App1
         {
             mainPage = m;
             currentPage = m;
+
+            //0 discover 
+            //1 discover reply
+            //2 bind request
+            //3 bind reply
+            //4 bind drop
+            //5 bind drop reply
+            //6 image send
+            //7 image send acknowledge
+            //8 draw command
+            //9 draw command reply
+            //a keepalive
         }
         public async void StartUDPReceive()
         {
@@ -39,17 +52,6 @@ namespace App1
                 string data = Encoding.UTF8.GetString(args.ByteData, 0, args.ByteData.Length);
 
                 List<string> info = data.Split('*').ToList();
-                //0 discover 
-                //1 discover reply
-                //2 bind request
-                //3 bind reply
-                //4 bind drop
-                //5 bind drop reply
-                //6 image send
-                //7 image send acknowledge
-                //8 draw command
-                //9 draw command reply
-                //a keepalive
 
                 switch (info[0])
                 {
@@ -138,6 +140,12 @@ namespace App1
                 bindedToaster.BindActive = false;
             }
         }
+        public async void SendImage(SimpleImage image)
+        {
+            string s = "6*" + image.width.ToString() + "*" + image.width.ToString() + "*" + image.ToDigitString();
+            byte[] msg = Encoding.ASCII.GetBytes(s);
+            await client.SendToAsync(msg, bindedToaster.IPAddress.ToString(), PORTS);
+        }
         async void SendKeepAlive(Object stateInfo)
         {
             if (bindedToaster != null && bindedToaster.BindActive == false)
@@ -147,6 +155,10 @@ namespace App1
             }
             else if (keepAliveWatch.ElapsedMilliseconds > 4 * keepAliveTimer)
             {
+                if (bindedToaster != null)
+                {
+                    bindedToaster.BindActive = false;
+                }
                 SendBindDropped();
                 BindDropped(true);
                 return;

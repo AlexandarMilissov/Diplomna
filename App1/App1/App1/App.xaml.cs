@@ -11,6 +11,7 @@ namespace App1
             InitializeComponent();
 
             MainPage = new NavigationPage(new MainPage());
+            //MainPage = new NavigationPage(new ToasterBindedPage(new Communication(new App1.MainPage())));
         }
 
         protected override void OnStart()

@@ -11,7 +11,7 @@ IPAddress BindIP (255,255,255,255);
 bool isBinded = false;
 unsigned int PORTR = 4210;  // local port to listen on
 unsigned int PORTS = 4211;  // local port to send to
-char incomingPacket[255];  // buffer for incoming packets
+char incomingPacket[1024];  // buffer for incoming packets
 
 unsigned long LastTimeSend = 0;
 unsigned long LastTimeReceived = 0;
@@ -62,8 +62,9 @@ void loop()
     Serial.printf("Bind Dropped, timed out");
   }
   int packetSize = Udp.parsePacket();
+  
   if (packetSize)
-  {
+  {/*
     int len = Udp.read(incomingPacket, 255);
     if (packetSize > 255)
     {
@@ -74,8 +75,7 @@ void loop()
     {
       incomingPacket[len] = 0;
     }
-    //Serial.printf("UDP packet contents: %s\n", incomingPacket);
-
+*/
     //0 discover
     //1 discover reply
     //2 bind request
@@ -87,17 +87,15 @@ void loop()
     //8 draw command
     //9 draw command reply
     //a keepalive
-
+    
+    //Serial.printf("UDP packet contents: %s\n", incomingPacket);
+    Serial.printf("%c \n",incomingPacket[0]);
     switch (incomingPacket[0])
     {
       case '0':
-        Serial.printf("Incoming Discover from: %s\n ", Udp.remoteIP().toString().c_str());
-        Serial.printf("DATA: %s\n ", incomingPacket);
-        Serial.printf("Port:%d\n",Udp.remotePort());
         SendDiscoverReply();
         break;
       case '2':
-        Serial.printf("Incoming Bind Request from: %s\n ", Udp.remoteIP().toString().c_str());
         if (isBinded == false || BindIP == Udp.remoteIP())
         {
           BindIP = Udp.remoteIP();
@@ -106,7 +104,6 @@ void loop()
         BindReply(isBinded);
         break;
       case '4':
-        Serial.printf("Incoming Bind Dropped\n");
         if (BindIP == Udp.remoteIP())
         {
           isBinded = false;
@@ -114,7 +111,7 @@ void loop()
         }
         break;
       case '6':
-        Serial.printf("Incoming Image\n image: %s\n ", incomingPacket);
+        Serial.printf("Incoming Image\n");
         break;
       case '8':
         Serial.printf("Incoming Draw Command: %s\n ", incomingPacket);
@@ -123,14 +120,10 @@ void loop()
         if(isBinded == false)
         {
           Serial.printf("Keepalive received when doesnt need\n");
-          /*
-          Serial.printf("%n\n",isBinded);
-          Serial.println(BindIP);
-          */
           SendErrorMessage("received keep alive when no bind was present");
           break;
         }
-        Serial.printf("Keepalive received\n");
+        //Serial.printf("Keepalive received\n");
         LastTimeReceived = millis();
         break;
       default:
@@ -174,7 +167,4 @@ void SendDiscoverReply()
   Serial.printf("to port: %d",PORTS);
   Udp.write("1*");
   Udp.endPacket();
-}
-void SendKeepAlive()
-{
 }
