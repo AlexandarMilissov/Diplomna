@@ -1,0 +1,646 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Driver_Motor:Pololu_Breakout_A4988 A1
+U 1 1 5E2DA50F
+P 2150 3950
+F 0 "A1" H 2200 4831 50  0000 C CNN
+F 1 "Pololu_Breakout_A4988" H 2200 4740 50  0000 C CNN
+F 2 "Module:Pololu_Breakout-16_15.2x20.3mm" H 2425 3200 50  0001 L CNN
+F 3 "https://www.pololu.com/product/2980/pictures" H 2250 3650 50  0001 C CNN
+	1    2150 3950
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x04_Female J1
+U 1 1 5E2E17DE
+P 1300 3950
+F 0 "J1" H 1328 3926 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 1328 3835 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x04_P2.00mm_Vertical" H 1300 3950 50  0001 C CNN
+F 3 "~" H 1300 3950 50  0001 C CNN
+	1    1300 3950
+	-1   0    0    1   
+$EndComp
+NoConn ~ 2550 3650
+NoConn ~ 2550 3550
+NoConn ~ 2550 3450
+Wire Wire Line
+	2150 3150 1950 3150
+$Comp
+L power:GND #PWR04
+U 1 1 5E2E26CC
+P 2150 3050
+F 0 "#PWR04" H 2150 2800 50  0001 C CNN
+F 1 "GND" H 2155 2877 50  0000 C CNN
+F 2 "" H 2150 3050 50  0001 C CNN
+F 3 "" H 2150 3050 50  0001 C CNN
+	1    2150 3050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:VCC #PWR05
+U 1 1 5E2E2B01
+P 2150 4900
+F 0 "#PWR05" H 2150 4750 50  0001 C CNN
+F 1 "VCC" H 2167 5073 50  0000 C CNN
+F 2 "" H 2150 4900 50  0001 C CNN
+F 3 "" H 2150 4900 50  0001 C CNN
+	1    2150 4900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2150 3150 2150 3050
+Connection ~ 2150 3150
+$Comp
+L power:+12V #PWR03
+U 1 1 5E2E3B75
+P 1950 4900
+F 0 "#PWR03" H 1950 4750 50  0001 C CNN
+F 1 "+12V" H 1965 5073 50  0000 C CNN
+F 2 "" H 1950 4900 50  0001 C CNN
+F 3 "" H 1950 4900 50  0001 C CNN
+	1    1950 4900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2150 4900 2150 4650
+Wire Wire Line
+	1950 4900 1950 4650
+Wire Wire Line
+	1650 4050 1500 4050
+Wire Wire Line
+	1650 3950 1500 3950
+Wire Wire Line
+	1500 3850 1650 3850
+Wire Wire Line
+	1650 3750 1500 3750
+$Comp
+L power:VCC #PWR07
+U 1 1 5E2E639C
+P 2750 4050
+F 0 "#PWR07" H 2750 3900 50  0001 C CNN
+F 1 "VCC" H 2767 4223 50  0000 C CNN
+F 2 "" H 2750 4050 50  0001 C CNN
+F 3 "" H 2750 4050 50  0001 C CNN
+	1    2750 4050
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	2750 4050 2650 4050
+$Comp
+L power:GND #PWR011
+U 1 1 5E2E72DD
+P 3400 4450
+F 0 "#PWR011" H 3400 4200 50  0001 C CNN
+F 1 "GND" H 3405 4277 50  0000 C CNN
+F 2 "" H 3400 4450 50  0001 C CNN
+F 3 "" H 3400 4450 50  0001 C CNN
+	1    3400 4450
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR01
+U 1 1 5E2E7878
+P 1000 850
+F 0 "#PWR01" H 1000 600 50  0001 C CNN
+F 1 "GND" H 1005 677 50  0000 C CNN
+F 2 "" H 1000 850 50  0001 C CNN
+F 3 "" H 1000 850 50  0001 C CNN
+	1    1000 850 
+	1    0    0    -1  
+$EndComp
+NoConn ~ 2150 1150
+NoConn ~ 1300 1000
+Wire Wire Line
+	1000 850  1300 850 
+$Comp
+L My_Library:ESP01 U1
+U 1 1 5E2EC39E
+P 1750 600
+F 0 "U1" H 1725 665 50  0000 C CNN
+F 1 "ESP01" H 1725 574 50  0000 C CNN
+F 2 "ESP8266:ESP-01" H 1900 550 50  0001 C CNN
+F 3 "" H 1900 550 50  0001 C CNN
+	1    1750 600 
+	1    0    0    -1  
+$EndComp
+NoConn ~ 1300 1150
+$Comp
+L Device:R R1
+U 1 1 5E2F5D51
+P 1300 1600
+F 0 "R1" H 1370 1646 50  0000 L CNN
+F 1 "1k" H 1370 1555 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 1230 1600 50  0001 C CNN
+F 3 "~" H 1300 1600 50  0001 C CNN
+	1    1300 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 5E2F6C7D
+P 1300 2000
+F 0 "R2" H 1370 2046 50  0000 L CNN
+F 1 "2k" H 1370 1955 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 1230 2000 50  0001 C CNN
+F 3 "~" H 1300 2000 50  0001 C CNN
+	1    1300 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 1300 1300 1450
+$Comp
+L power:GND #PWR02
+U 1 1 5E2F8FDC
+P 1300 2250
+F 0 "#PWR02" H 1300 2000 50  0001 C CNN
+F 1 "GND" H 1305 2077 50  0000 C CNN
+F 2 "" H 1300 2250 50  0001 C CNN
+F 3 "" H 1300 2250 50  0001 C CNN
+	1    1300 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 2150 1300 2250
+$Comp
+L Connector:Conn_01x02_Female J6
+U 1 1 5E304B8F
+P 5700 5600
+F 0 "J6" H 5728 5576 50  0000 L CNN
+F 1 "Conn_01x02_Female" H 5728 5485 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x02_P2.00mm_Vertical" H 5700 5600 50  0001 C CNN
+F 3 "~" H 5700 5600 50  0001 C CNN
+	1    5700 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J7
+U 1 1 5E307371
+P 5700 5700
+F 0 "J7" H 5728 5676 50  0000 L CNN
+F 1 "Conn_01x02_Female" H 5728 5585 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x02_P2.00mm_Vertical" H 5700 5700 50  0001 C CNN
+F 3 "~" H 5700 5700 50  0001 C CNN
+	1    5700 5700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5500 5600 5500 5450
+Wire Wire Line
+	5500 5700 5500 5850
+Wire Wire Line
+	5900 5600 5900 5450
+$Comp
+L power:GND #PWR019
+U 1 1 5E30C601
+P 5500 5850
+F 0 "#PWR019" H 5500 5600 50  0001 C CNN
+F 1 "GND" H 5505 5677 50  0000 C CNN
+F 2 "" H 5500 5850 50  0001 C CNN
+F 3 "" H 5500 5850 50  0001 C CNN
+	1    5500 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 5700 5900 5850
+$Comp
+L power:+3.3V #PWR021
+U 1 1 5E30D5FE
+P 5900 5850
+F 0 "#PWR021" H 5900 5700 50  0001 C CNN
+F 1 "+3.3V" H 5915 6023 50  0000 C CNN
+F 2 "" H 5900 5850 50  0001 C CNN
+F 3 "" H 5900 5850 50  0001 C CNN
+	1    5900 5850
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:VCC #PWR018
+U 1 1 5E312288
+P 5500 5450
+F 0 "#PWR018" H 5500 5300 50  0001 C CNN
+F 1 "VCC" H 5517 5623 50  0000 C CNN
+F 2 "" H 5500 5450 50  0001 C CNN
+F 3 "" H 5500 5450 50  0001 C CNN
+	1    5500 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR020
+U 1 1 5E31228E
+P 5900 5450
+F 0 "#PWR020" H 5900 5300 50  0001 C CNN
+F 1 "+12V" H 5915 5623 50  0000 C CNN
+F 2 "" H 5900 5450 50  0001 C CNN
+F 3 "" H 5900 5450 50  0001 C CNN
+	1    5900 5450
+	1    0    0    -1  
+$EndComp
+$Comp
+L My_Library:MiniMicroJst2.0Ph3Pin J5
+U 1 1 5E3182CC
+P 5250 4250
+F 0 "J5" H 5518 4051 50  0000 L CNN
+F 1 "MiniMicroJst2.0Ph3Pin" H 5518 3960 50  0000 L CNN
+F 2 "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical" H 5250 4250 50  0001 C CNN
+F 3 "" H 5250 4250 50  0001 C CNN
+	1    5250 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR015
+U 1 1 5E31FB9B
+P 5000 4600
+F 0 "#PWR015" H 5000 4450 50  0001 C CNN
+F 1 "+12V" H 5015 4773 50  0000 C CNN
+F 2 "" H 5000 4600 50  0001 C CNN
+F 3 "" H 5000 4600 50  0001 C CNN
+	1    5000 4600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5150 4600 5000 4600
+$Comp
+L power:GND #PWR014
+U 1 1 5E321857
+P 5000 4500
+F 0 "#PWR014" H 5000 4250 50  0001 C CNN
+F 1 "GND" H 5005 4327 50  0000 C CNN
+F 2 "" H 5000 4500 50  0001 C CNN
+F 3 "" H 5000 4500 50  0001 C CNN
+	1    5000 4500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2550 3850 4250 3850
+Wire Wire Line
+	4250 3850 4250 2500
+Wire Wire Line
+	4750 2600 4350 2600
+Wire Wire Line
+	4350 2600 4350 3950
+Wire Wire Line
+	4350 3950 2550 3950
+Wire Wire Line
+	4450 5250 4450 2700
+Wire Wire Line
+	4450 2700 4750 2700
+Wire Wire Line
+	4750 2800 4550 2800
+Wire Wire Line
+	4150 2300 4750 2300
+Wire Wire Line
+	4250 2500 4750 2500
+Wire Wire Line
+	3800 5250 4450 5250
+Wire Wire Line
+	4000 5450 3900 5450
+$Comp
+L power:VCC #PWR013
+U 1 1 5E2E72F7
+P 4000 5450
+F 0 "#PWR013" H 4000 5300 50  0001 C CNN
+F 1 "VCC" H 4017 5623 50  0000 C CNN
+F 2 "" H 4000 5450 50  0001 C CNN
+F 3 "" H 4000 5450 50  0001 C CNN
+	1    4000 5450
+	1    0    0    1   
+$EndComp
+Wire Wire Line
+	2900 5150 2750 5150
+Wire Wire Line
+	2750 5250 2900 5250
+Wire Wire Line
+	2900 5350 2750 5350
+Wire Wire Line
+	2900 5450 2750 5450
+$Comp
+L power:+12V #PWR08
+U 1 1 5E2E72EB
+P 3200 6300
+F 0 "#PWR08" H 3200 6150 50  0001 C CNN
+F 1 "+12V" H 3215 6473 50  0000 C CNN
+F 2 "" H 3200 6300 50  0001 C CNN
+F 3 "" H 3200 6300 50  0001 C CNN
+	1    3200 6300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3400 4550 3400 4450
+$Comp
+L power:VCC #PWR012
+U 1 1 5E2E72E3
+P 3400 6300
+F 0 "#PWR012" H 3400 6150 50  0001 C CNN
+F 1 "VCC" H 3417 6473 50  0000 C CNN
+F 2 "" H 3400 6300 50  0001 C CNN
+F 3 "" H 3400 6300 50  0001 C CNN
+	1    3400 6300
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3400 4550 3200 4550
+NoConn ~ 3800 4850
+NoConn ~ 3800 4950
+NoConn ~ 3800 5050
+$Comp
+L Connector:Conn_01x04_Female J2
+U 1 1 5E2E72D0
+P 2550 5350
+F 0 "J2" H 2578 5326 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 2578 5235 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x04_P2.00mm_Vertical" H 2550 5350 50  0001 C CNN
+F 3 "~" H 2550 5350 50  0001 C CNN
+	1    2550 5350
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4550 2800 4550 5350
+Wire Wire Line
+	3800 5350 4550 5350
+Wire Wire Line
+	4750 3000 4650 3000
+Wire Wire Line
+	4650 3000 4650 4400
+$Comp
+L power:GND #PWR016
+U 1 1 5E3681FB
+P 5150 3800
+F 0 "#PWR016" H 5150 3550 50  0001 C CNN
+F 1 "GND" H 5155 3627 50  0000 C CNN
+F 2 "" H 5150 3800 50  0001 C CNN
+F 3 "" H 5150 3800 50  0001 C CNN
+	1    5150 3800
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4750 2900
+NoConn ~ 5350 3800
+NoConn ~ 5750 2700
+NoConn ~ 5750 2800
+NoConn ~ 5750 2900
+NoConn ~ 5750 3000
+NoConn ~ 5750 3100
+NoConn ~ 5750 3200
+NoConn ~ 5750 2500
+NoConn ~ 5750 2300
+NoConn ~ 5750 2100
+NoConn ~ 5150 1700
+NoConn ~ 5350 1700
+$Comp
+L power:VCC #PWR017
+U 1 1 5E37A94D
+P 5450 1400
+F 0 "#PWR017" H 5450 1250 50  0001 C CNN
+F 1 "VCC" H 5467 1573 50  0000 C CNN
+F 2 "" H 5450 1400 50  0001 C CNN
+F 3 "" H 5450 1400 50  0001 C CNN
+	1    5450 1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 1400 5450 1700
+$Comp
+L Device:R R3
+U 1 1 5E382704
+P 3350 3250
+F 0 "R3" H 3420 3296 50  0000 L CNN
+F 1 "4,7k" H 3420 3205 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3280 3250 50  0001 C CNN
+F 3 "~" H 3350 3250 50  0001 C CNN
+	1    3350 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R4
+U 1 1 5E382D08
+P 3550 3350
+F 0 "R4" H 3620 3396 50  0000 L CNN
+F 1 "4,7k" H 3620 3305 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3480 3350 50  0001 C CNN
+F 3 "~" H 3550 3350 50  0001 C CNN
+	1    3550 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R5
+U 1 1 5E383D77
+P 3750 3450
+F 0 "R5" H 3820 3496 50  0000 L CNN
+F 1 "4,7k" H 3820 3405 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3680 3450 50  0001 C CNN
+F 3 "~" H 3750 3450 50  0001 C CNN
+	1    3750 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R6
+U 1 1 5E384EF1
+P 3950 3550
+F 0 "R6" H 4020 3596 50  0000 L CNN
+F 1 "4,7k" H 4020 3505 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3880 3550 50  0001 C CNN
+F 3 "~" H 3950 3550 50  0001 C CNN
+	1    3950 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3950 3400 4750 3400
+Wire Wire Line
+	4750 3300 3750 3300
+Wire Wire Line
+	4750 3200 3600 3200
+Wire Wire Line
+	3350 3400 3350 3700
+Wire Wire Line
+	3350 3700 3550 3700
+Wire Wire Line
+	3750 3600 3750 3700
+Connection ~ 3750 3700
+Wire Wire Line
+	3750 3700 3950 3700
+Wire Wire Line
+	3550 3500 3550 3700
+Connection ~ 3550 3700
+Wire Wire Line
+	3550 3700 3750 3700
+$Comp
+L power:GND #PWR010
+U 1 1 5E390714
+P 3350 3700
+F 0 "#PWR010" H 3350 3450 50  0001 C CNN
+F 1 "GND" H 3355 3527 50  0000 C CNN
+F 2 "" H 3350 3700 50  0001 C CNN
+F 3 "" H 3350 3700 50  0001 C CNN
+	1    3350 3700
+	1    0    0    -1  
+$EndComp
+Connection ~ 3350 3700
+$Comp
+L Connector:Conn_01x04_Female J4
+U 1 1 5E394455
+P 3600 2800
+F 0 "J4" H 3628 2776 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 3628 2685 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x04_P2.00mm_Vertical" H 3600 2800 50  0001 C CNN
+F 3 "~" H 3600 2800 50  0001 C CNN
+	1    3600 2800
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3350 3100 3500 3100
+Wire Wire Line
+	3600 3000 3600 3200
+Connection ~ 3600 3200
+Wire Wire Line
+	3600 3200 3550 3200
+Wire Wire Line
+	3500 3000 3500 3100
+Connection ~ 3500 3100
+Wire Wire Line
+	3500 3100 4750 3100
+Wire Wire Line
+	3950 3400 3950 3000
+Wire Wire Line
+	3950 3000 3800 3000
+Connection ~ 3950 3400
+Wire Wire Line
+	3700 3000 3700 3300
+Wire Wire Line
+	3700 3300 3750 3300
+Connection ~ 3750 3300
+Wire Wire Line
+	1300 1750 1300 1800
+Connection ~ 1300 1800
+Wire Wire Line
+	1300 1800 1300 1850
+Wire Wire Line
+	4050 2400 4050 1800
+Wire Wire Line
+	1300 1800 4050 1800
+Wire Wire Line
+	4050 2400 4750 2400
+Wire Wire Line
+	2150 850  4150 850 
+Wire Wire Line
+	4150 850  4150 2300
+$Comp
+L Connector:Conn_01x04_Female J3
+U 1 1 5E3BF012
+P 3200 2700
+F 0 "J3" H 3228 2676 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 3228 2585 50  0000 L CNN
+F 2 "Connector_PinSocket_2.00mm:PinSocket_1x04_P2.00mm_Vertical" H 3200 2700 50  0001 C CNN
+F 3 "~" H 3200 2700 50  0001 C CNN
+	1    3200 2700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3000 2500 3100 2500
+Connection ~ 3100 2500
+Wire Wire Line
+	3100 2500 3200 2500
+Connection ~ 3200 2500
+Wire Wire Line
+	3200 2500 3300 2500
+Wire Wire Line
+	3300 2500 3300 2350
+Connection ~ 3300 2500
+$Comp
+L power:VCC #PWR09
+U 1 1 5E3CA51E
+P 3300 2350
+F 0 "#PWR09" H 3300 2200 50  0001 C CNN
+F 1 "VCC" H 3317 2523 50  0000 C CNN
+F 2 "" H 3300 2350 50  0001 C CNN
+F 3 "" H 3300 2350 50  0001 C CNN
+	1    3300 2350
+	1    0    0    -1  
+$EndComp
+Connection ~ 3400 4550
+Wire Wire Line
+	3200 6300 3200 6050
+Wire Wire Line
+	3400 6300 3400 6050
+$Comp
+L Driver_Motor:Pololu_Breakout_A4988 A2
+U 1 1 5E2E72CA
+P 3400 5350
+F 0 "A2" H 3450 6231 50  0000 C CNN
+F 1 "Pololu_Breakout_A4988" H 3450 6140 50  0000 C CNN
+F 2 "Module:Pololu_Breakout-16_15.2x20.3mm" H 3675 4600 50  0001 L CNN
+F 3 "https://www.pololu.com/product/2980/pictures" H 3500 5050 50  0001 C CNN
+	1    3400 5350
+	-1   0    0    1   
+$EndComp
+NoConn ~ 3800 5650
+NoConn ~ 2550 4250
+Wire Wire Line
+	2650 4050 2650 4350
+Wire Wire Line
+	2650 4350 2550 4350
+Connection ~ 2650 4050
+Wire Wire Line
+	2650 4050 2550 4050
+Wire Wire Line
+	3800 5750 3900 5750
+Wire Wire Line
+	3900 5750 3900 5450
+Connection ~ 3900 5450
+Wire Wire Line
+	3900 5450 3800 5450
+NoConn ~ 4750 2100
+NoConn ~ 4750 2200
+$Comp
+L MCU_Module:Arduino_UNO_R3 A3
+U 1 1 5E3F068A
+P 5250 2700
+F 0 "A3" H 5250 3881 50  0000 C CNN
+F 1 "Arduino_UNO_R3" H 5250 3790 50  0000 C CNN
+F 2 "Module:Arduino_UNO_R3" H 5250 2700 50  0001 C CIN
+F 3 "https://www.arduino.cc/en/Main/arduinoBoardUno" H 5250 2700 50  0001 C CNN
+	1    5250 2700
+	1    0    0    -1  
+$EndComp
+NoConn ~ 5750 3400
+NoConn ~ 5750 3500
+NoConn ~ 5250 2300
+Wire Wire Line
+	2150 1000 2250 1000
+Wire Wire Line
+	2250 1000 2250 1300
+Wire Wire Line
+	2250 1300 2150 1300
+$Comp
+L power:+3.3V #PWR0101
+U 1 1 5E410B17
+P 2400 1300
+F 0 "#PWR0101" H 2400 1150 50  0001 C CNN
+F 1 "+3.3V" H 2415 1473 50  0000 C CNN
+F 2 "" H 2400 1300 50  0001 C CNN
+F 3 "" H 2400 1300 50  0001 C CNN
+	1    2400 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2250 1300 2400 1300
+Connection ~ 2250 1300
+NoConn ~ 5250 3800
+Wire Wire Line
+	4650 4400 5150 4400
+Wire Wire Line
+	5000 4500 5150 4500
+$EndSCHEMATC

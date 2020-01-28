@@ -8,10 +8,10 @@ namespace App1
 {
     public class SimpleImage
     {
-        public int width;
-        public int height;
+        public Int16 width;
+        public Int16 height;
         public BitArray imageInBits;
-        public SimpleImage(int Width, int Height, BitArray ImageInBits)
+        public SimpleImage(Int16 Width, Int16 Height, BitArray ImageInBits)
         {
             width = Width;
             height = Height;

@@ -72,9 +72,9 @@ namespace App1
                 memoryStream.Dispose();
             }
 
-            int offset = BitConverter.ToInt32(b.ToList().Skip(10).Take(4).ToArray(), 0);
-            int width = BitConverter.ToInt32(b.ToList().Skip(18).Take(4).ToArray(), 0);
-            int height = BitConverter.ToInt32(b.ToList().Skip(22).Take(4).ToArray(), 0);
+            Int16 offset = BitConverter.ToInt16(b.ToList().Skip(10).Take(4).ToArray(), 0);
+            Int16 width = BitConverter.ToInt16(b.ToList().Skip(18).Take(4).ToArray(), 0);
+            Int16 height = BitConverter.ToInt16(b.ToList().Skip(22).Take(4).ToArray(), 0);
 
             if (width* height > 128 * 8)
             {

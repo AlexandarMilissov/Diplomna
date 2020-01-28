@@ -21,19 +21,13 @@ void setup()
 {
   pinMode(0, INPUT);
   Serial.begin(9600);
-  Serial.println();
-
-  Serial.printf("Connecting to %s ", ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
-    Serial.print(".");
   }
-  Serial.println(" connected");
 
   Udp.begin(PORTR);
-  Serial.printf("Now listening at IP %s, UDP port %d\n", WiFi.localIP().toString().c_str(), PORTR);
 }
 
 
@@ -44,7 +38,6 @@ void loop()
     if(millis() - LastTimeSend>keepAliveTimer)
     {
       LastTimeSend = millis();
-      Serial.printf("keepalive send\n");
       Udp.beginPacket(BindIP, PORTS);
       Udp.write("a*");
       Udp.endPacket();
@@ -56,10 +49,7 @@ void loop()
   
   if(isBinded!=false && millis() - LastTimeReceived > 4*keepAliveTimer)
   {
-    Serial.println(millis() - LastTimeReceived);
     isBinded = false;
-    Serial.printf("\n");
-    Serial.printf("Bind Dropped, timed out");
   }
   int packetSize = Udp.parsePacket();
   
@@ -83,7 +73,6 @@ void loop()
     //a keepalive
     
     //Serial.printf("UDP packet contents: %s\n", incomingPacket);
-    Serial.printf("%c \n",incomingPacket[0]);
     switch (incomingPacket[0])
     {
       case '0':
@@ -105,10 +94,10 @@ void loop()
         }
         break;
       case '6':
-        Serial.printf("Incoming Image\n ");
+        Serial.print(incomingPacket);
+        Serial.printf("\0");
         break;
       case '8':
-        Serial.printf("Incoming Draw Command: %s\n ", incomingPacket);
         break;
       case 'a':
         if(isBinded == false)
@@ -121,7 +110,6 @@ void loop()
         LastTimeReceived = millis();
         break;
       default:
-        Serial.printf("Invalid Message Received\n");
         break;
     }
   }
@@ -138,19 +126,16 @@ void BindReply(bool b)
   if (b)
   {
     Udp.write("3*1");
-    Serial.printf("Bind Accepted\n");
     LastTimeReceived = millis();
   }
   else
   {
     Udp.write("3*0");
-    Serial.printf("Bind Denied");
   }
   Udp.endPacket();
 }
 void BindDropReply()
 {
-  Serial.printf("Accepted Bind Dropped\n");
   Udp.beginPacket(Udp.remoteIP(), PORTS);
   Udp.write("5*");
   Udp.endPacket();
@@ -158,7 +143,6 @@ void BindDropReply()
 void SendDiscoverReply()
 {
   Udp.beginPacket(Udp.remoteIP(), PORTS);
-  Serial.printf("to port: %d",PORTS);
   Udp.write("1*");
   Udp.endPacket();
 }
