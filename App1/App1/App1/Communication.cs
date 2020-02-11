@@ -146,6 +146,11 @@ namespace App1
             byte[] msg = Encoding.ASCII.GetBytes(s);
             await client.SendToAsync(msg, bindedToaster.IPAddress.ToString(), PORTS);
         }
+        public async void SendCommand(char command)
+        {
+            byte[] msg = Encoding.ASCII.GetBytes("8*" + command);
+            await client.SendToAsync(msg, bindedToaster.IPAddress.ToString(), PORTS);
+        }
         async void SendKeepAlive(Object stateInfo)
         {
             if (bindedToaster != null && bindedToaster.BindActive == false)

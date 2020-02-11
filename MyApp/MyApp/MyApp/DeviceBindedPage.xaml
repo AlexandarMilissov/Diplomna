@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MyApp.DeviceBindedPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout VerticalOptions="StartAndExpand">
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
+                    <Button Text="Transform File" Clicked="TransformFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </StackLayout>
+
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
+                    <Button Text="Select File To Send" Clicked="SelectFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Send File" Clicked="SendFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </StackLayout>
+
+
+                    <Button Text="Up" Clicked="CommandButtonClicked1" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
+                    <Button Text="Left" Clicked="CommandButtonClicked2" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Stop" Clicked="CommandButtonClicked3" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Right" Clicked="CommandButtonClicked4" HorizontalOptions="Center" VerticalOptions="Center"/>
+                </StackLayout>
+                <Button Text="Down" Clicked="CommandButtonClicked5" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Start" Clicked="CommandButtonClicked6" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="End" Clicked="CommandButtonClicked7" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+
+            </StackLayout>
+            <Button Text="Back"
+                VerticalOptions="End" 
+                HorizontalOptions="Start"
+                Clicked="BackButtonClicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

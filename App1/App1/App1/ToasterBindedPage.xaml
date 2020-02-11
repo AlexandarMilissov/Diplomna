@@ -11,10 +11,20 @@
             <StackLayout VerticalOptions="StartAndExpand">
                 <Button Text="Pick File" Clicked="SelectImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Text="Send Image" Clicked="SendImageButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Label Text="File Is :" x:Name="lbl"/>
-                <StackLayout>
+
+
+                <Button Text="Up" Clicked="CommandButtonClicked1" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
+                    <Button Text="Left" Clicked="CommandButtonClicked2" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Stop" Clicked="CommandButtonClicked3" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Right" Clicked="CommandButtonClicked4" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </StackLayout>
-                </StackLayout>
+                <Button Text="Down" Clicked="CommandButtonClicked5" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Start" Clicked="CommandButtonClicked6" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="End" Clicked="CommandButtonClicked7" HorizontalOptions="Center" VerticalOptions="Center"/>
+                
+                
+            </StackLayout>
             <Button Text="Back"
                 VerticalOptions="End" 
                 HorizontalOptions="Start"

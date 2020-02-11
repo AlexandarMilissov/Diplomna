@@ -45,8 +45,6 @@ void loop()
   }
 
 
-
-  
   if(isBinded!=false && millis() - LastTimeReceived > 4*keepAliveTimer)
   {
     isBinded = false;
@@ -98,6 +96,8 @@ void loop()
         Serial.printf("\0");
         break;
       case '8':
+        Serial.print(incomingPacket);
+        Serial.printf("\0");
         break;
       case 'a':
         if(isBinded == false)

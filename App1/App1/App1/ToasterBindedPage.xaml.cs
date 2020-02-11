@@ -127,5 +127,41 @@ namespace App1
             SimpleImage simpleImage = new SimpleImage(width,height,bitArray);
             return simpleImage;
         }
+
+        private void CommandButtonClicked1(object sender, EventArgs e)
+        {
+            char command = '1';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked2(object sender, EventArgs e)
+        {
+            char command = '2';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked3(object sender, EventArgs e)
+        {
+            char command = '3';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked4(object sender, EventArgs e)
+        {
+            char command = '4';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked5(object sender, EventArgs e)
+        {
+            char command = '5';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked6(object sender, EventArgs e)
+        {
+            char command = '6';
+            communication.SendCommand(command);
+        }
+        private void CommandButtonClicked7(object sender, EventArgs e)
+        {
+            char command = '7';
+            communication.SendCommand(command);
+        }
     }
 }
