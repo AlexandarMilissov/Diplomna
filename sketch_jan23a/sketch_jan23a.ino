@@ -16,7 +16,9 @@ unsigned long LastTimeSend = 0;
 unsigned long LastTimeReceived = 0;
 #define keepAliveTimer 2000
 
-
+bool isSavingImage = false;
+int numberPackets = 0;
+int lastPacketSize = 0;
 void setup() 
 {
   
@@ -62,8 +64,23 @@ void loop()
     {
       continue;
     }
-    String line = client.readStringUntil('\r');
-    ProcessMessage(line);
+    if(!isSavingImage)
+    {
+      String line = client.readStringUntil('\r');
+      ProcessMessage(line);
+    }
+    else
+    {
+      if(numberPackets == 1)
+      {
+        nReads = lastPacketSize;
+      }
+      numberPackets--;
+      for(int i = 0; i < 1002; i ++)
+      {
+        Serial.write(client.read());
+      }
+    }
   }
 }
 void CheckForDiscoverMessages()
@@ -103,11 +120,11 @@ void ProcessMessage(String line)
 }
 void ProcessImage(String line)
 {
-  
+  isSavingImage = true;
   int i = 2;
   int width = GetNumberFromString(line,&i);
   int height = GetNumberFromString(line,&i);
-  int numberPackets = GetNumberFromString(line,&i);
+  numberPackets = GetNumberFromString(line,&i);
   int lastPacketSize = GetNumberFromString(line,&i);
   String fileName = "";
   while(true)

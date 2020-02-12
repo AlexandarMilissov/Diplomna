@@ -13,20 +13,20 @@
 
 #define Laser 9
 
-#define Button1 A0
-#define Button2 A1
-#define Button3 A2
-#define Button4 A3
+#define Button1 14
+#define Button2 15
+#define Button3 16
+#define Button4 17
 
-#define CS = 10
+#define CS 10
 
-int PosX = 0;
-int PosY = 0;
-
-int Width;
-int Height;
-byte *image;
 SoftwareSerial mySerial(RX, TX); // RX, TX
+File myFile;
+
+char movement = '3';
+bool isSavingImage = false;
+int numberPackets = 0;
+int lastPacketSize = 0;
 
 void setup() {
   
@@ -35,14 +35,18 @@ void setup() {
   pinMode(Motor2Step,OUTPUT);
   pinMode(Motor2Dir,OUTPUT);
   SD.begin(CS);
+  pinMode(Button1,INPUT);
+  pinMode(Button2,INPUT);
+  pinMode(Button3,INPUT);
+  pinMode(Button4,INPUT);
   
   Serial.begin(9600);
   while (!Serial) {
   }
 
-  Serial.println("Goodnight moon!");
   mySerial.begin(9600);
-  Serial.println("Goodnight moon!");
+
+  ResetMotors();
 }
 
 /*
@@ -54,11 +58,32 @@ void setup() {
  * 6 Start
  * 7 End
  */
-char movement = '3';
 void loop()
 {
   if (mySerial.available())
   {
+    if(isSavingImage)
+    {
+      int nReads = 1000;
+      String message = "";
+      char c;
+      if(numberPackets == 1)
+      {
+        nReads = lastPacketSize;
+      }
+      numberPackets--;
+      for(int i = 0; i < nReads;i++)
+      {
+        c = mySerial.read();
+        if(c==-1)
+        {
+          i--;
+          continue;
+        }
+        message += c;
+      }
+      SavePartOfImage(message);
+    }
     String message = mySerial.readString();
     if(message[0] == '8')
     {
@@ -66,9 +91,24 @@ void loop()
       {
         analogWrite(Laser, 255);
       }
-      else if(message[2] == '6')
+      else if(message[2] == '7')
       {
         analogWrite(Laser, 0);
+      }
+      else if(message[2] == '8')
+      {
+        String fileName = "";
+        int i = 2;
+        while(true)
+        {
+          if(message[i]=='\r')
+          {
+            break;
+          }
+          fileName += message[i];
+          i++;
+        }
+        DrawImage(fileName);
       }
       else
       {
@@ -77,13 +117,14 @@ void loop()
     }
     else if(message[0] == '6')
     {
-      Width = message[2];
-      Width<<8;
-      Width | message[3];
-      Height = message[5];
-      Height<<8;
-      Height | message[6];
-      image = message[8];
+      if(!isSavingImage)
+      {
+        ProcessImage(message);
+      }
+      else
+      {
+        SavePartOfImage(message);
+      }
     }
   }
   switch(movement)
@@ -106,6 +147,150 @@ void loop()
       break;
   }
 }
+void SavePartOfImage(String message)
+{
+  for(int i = 0; i < lastPacketSize + 0; i++)
+  {
+    myFile.print(message[i]);
+  }
+  if(numberPackets == 0)
+  {
+    isSavingImage = false;
+    myFile.close();
+  }
+}
+
+void DrawImage(String fileName)
+{
+  myFile = SD.open(fileName, FILE_READ);
+  int width = 0;
+  int height = 0;
+  char c = myFile.read();
+  while(c != '\n')
+  {
+    if(c=='\r')
+    {
+      continue;
+    }
+    width *= 10;
+    width += (c - '0');
+    c = myFile.read();
+  }
+  c = myFile.read();
+  while(c != '\n')
+  {
+    if(c=='\r')
+    {
+      continue;
+    }
+    height *= 10;
+    height += (c - '0');
+    c = myFile.read();
+  }
+
+
+
+  byte next8 = myFile.read();
+  int count = 1;
+  bool curr = next8 & 1;
+  next8>>1;
+  bool next = next8 & 1;
+  if(curr)
+  {
+     analogWrite(Laser, 255);
+  }
+  else
+  {
+    analogWrite(Laser, 0);
+  }
+  for(int i = 0; i < width; i++)
+  {
+    for(int j = 0; j < height; j++)
+    {
+      if(next != curr)
+      {
+        LaserWork(next);
+        delay(1);
+      }
+      Mottor1Step(true);
+      curr = next;
+      if(count == 7)
+      {
+        next8 = myFile.read();
+        count = 0;
+      }
+      else
+      {
+        count++;
+      }
+      next = next8 & 1;
+      next8>>1;
+      
+      if(!digitalRead(Button1)||!digitalRead(Button2))
+      {
+        break;
+      }
+    }
+    if(!digitalRead(Button2)||!digitalRead(Button4))
+    {
+      break;
+    }
+  }
+  ResetMotors();
+  myFile.close();
+  
+}
+void LaserWork(bool work)
+{
+  if(work)
+  {
+     analogWrite(Laser, 255);
+  }
+  else
+  {
+    analogWrite(Laser, 0);
+  }
+}
+void ProcessImage(String line)
+{
+  isSavingImage = true;
+  int i = 2;
+  int width = GetNumberFromString(line,&i,'*');
+  int height = GetNumberFromString(line,&i,'*');
+  numberPackets = GetNumberFromString(line,&i,'*');
+  lastPacketSize = GetNumberFromString(line,&i,'*');
+  String fileName = "";
+  while(true)
+  {
+    if(line[i]=='\r')
+    {
+      break;
+    }
+    fileName += line[i];
+    i++;
+  }
+  myFile = SD.open(fileName, FILE_WRITE);
+  myFile.println(width);
+  myFile.println(height);
+}
+int GetNumberFromString(String line, int *i, char symbol)
+{
+  int number = 0;
+  while(true)
+  {
+    if(line[*i]==symbol)
+    {
+      break;
+    }
+    number *= 10;
+    number += (line[*i] - '0');
+    *i++;
+  }
+  return number;
+}
+
+
+
 void Mottor1Move(bool dir)
 {
   digitalWrite(Motor1Dir,dir);
@@ -116,6 +301,21 @@ void Mottor1Move(bool dir)
   digitalWrite(Motor1Step,LOW);
   delay(TimeDelay);
 }
+void ResetMotor1()
+{
+  while(!digitalRead(Button1)||!digitalRead(Button2))
+  {
+    Mottor1Move(false);
+  }
+}
+void Mottor1Step(bool dir)
+{
+  for(int i = 0; i < 20; i++)
+  {
+    Mottor1Move(dir);
+  }
+}
+
 
 void Mottor2Move(bool dir)
 {
@@ -126,4 +326,24 @@ void Mottor2Move(bool dir)
   
   digitalWrite(Motor2Step,LOW);
   delay(TimeDelay);
+}
+void ResetMotor2()
+{
+  while(!digitalRead(Button2)||!digitalRead(Button4))
+  {
+    Mottor2Move(false);
+  }
+}
+void Mottor2Step(bool dir)
+{
+  for(int i = 0; i < 20; i++)
+  {
+    Mottor2Move(dir);
+  }
+}
+
+void ResetMotors()
+{
+  ResetMotor1();
+  ResetMotor2();
 }
