@@ -1,4 +1,6 @@
 #include <SoftwareSerial.h>
+#include <SPI.h>
+#include <SD.h>
 
 #define RX 2
 #define TX 3
@@ -11,10 +13,12 @@
 
 #define Laser 9
 
-#define Button1 9
-#define Button2 10
-#define Button3 11
-#define Button4 12
+#define Button1 A0
+#define Button2 A1
+#define Button3 A2
+#define Button4 A3
+
+#define CS = 10
 
 int PosX = 0;
 int PosY = 0;
@@ -30,6 +34,7 @@ void setup() {
   pinMode(Motor1Dir,OUTPUT);
   pinMode(Motor2Step,OUTPUT);
   pinMode(Motor2Dir,OUTPUT);
+  SD.begin(CS);
   
   Serial.begin(9600);
   while (!Serial) {

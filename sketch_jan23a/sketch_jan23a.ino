@@ -16,6 +16,7 @@ unsigned long LastTimeSend = 0;
 unsigned long LastTimeReceived = 0;
 #define keepAliveTimer 2000
 
+
 void setup() 
 {
   
@@ -100,6 +101,40 @@ void ProcessMessage(String line)
         break;
     }
 }
+void ProcessImage(String line)
+{
+  
+  int i = 2;
+  int width = GetNumberFromString(line,&i);
+  int height = GetNumberFromString(line,&i);
+  int numberPackets = GetNumberFromString(line,&i);
+  int lastPacketSize = GetNumberFromString(line,&i);
+  String fileName = "";
+  while(true)
+  {
+    if(line[i]=='\r')
+    {
+      break;
+    }
+    fileName += line[i];
+    i++;
+  }
+}
+int GetNumberFromString(String line, int *i)
+{
+  int number = 0;
+  while(true)
+  {
+    if(line[*i]=='*')
+    {
+      break;
+    }
+    number *= 10;
+    number += (line[*i] - '0');
+    *i++;
+  }
+  return number;
+}
 void SendKeepAlive()
 {
   LastTimeSend = millis();
@@ -112,21 +147,3 @@ void SendDiscoverReply()
   Udp.write(thisDeviceName);
   Udp.endPacket();
 }
-
-/*
-client = server.available();
-  if(client.connected())
-  {
-    client.setNoDelay(true);
-  }
-  while (client.connected())
-  {
-    if (!client.available())
-    {
-      continue;
-    }
-    String line = client.readStringUntil('\r');
-    Serial.print(line);
-    client.println("jhasvcjls");
-  }
-  */

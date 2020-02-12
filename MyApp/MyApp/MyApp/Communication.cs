@@ -166,7 +166,17 @@ namespace MyApp
                 numberPackets++;
             }
 
-            string start = "6*" + image.width.ToString() + "*" + image.height.ToString() + "*" + numberPackets.ToString() + "*" + lastPacketSize.ToString() + "\r";
+            string start =  "6*" + 
+							image.width.ToString() + 
+							"*" + 
+							image.height.ToString() + 
+							"*" + 
+							numberPackets.ToString() + 
+							"*" + 
+							lastPacketSize.ToString() + 
+							"*" + 
+							"file.txt" + 
+							"\r";
             byte[] msg = Encoding.UTF8.GetBytes(start);
             tcpClient.WriteStream.Write(msg, 0, msg.Length);
             await tcpClient.WriteStream.FlushAsync();
