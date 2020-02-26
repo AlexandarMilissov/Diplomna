@@ -39,13 +39,18 @@ void setup() {
   pinMode(Button2,INPUT);
   pinMode(Button3,INPUT);
   pinMode(Button4,INPUT);
+  LaserWork(false);
   
-  SD.begin(CS);
+  
   Serial.begin(9600);
+  mySerial.begin(9600);
+  while (!Serial) {}
   delay(1000);
 
-  mySerial.begin(9600);
-  pinMode(13,OUTPUT);
+  if(!SD.begin(CS))
+  {Serial.println("no");}
+  else
+  Serial.println("yes");
 
 //  ResetMotors();
 }
@@ -70,9 +75,15 @@ void loop()
       char c;
       if(numberPackets == 1)
       {
-        nReads = lastPacketSize;
+        if(lastPacketSize%8==0)
+        {
+          nReads = lastPacketSize / 8;
+        }
+        else
+        {
+          nReads = lastPacketSize / 8 + 1;
+        }
       }
-      numberPackets--;
       for(int i = 0; i < nReads;i++)
       {
         c = mySerial.read();
@@ -86,16 +97,18 @@ void loop()
       SavePartOfImage(message);
       return;
     }
-    String message = mySerial.readString();
+    String message = mySerial.readStringUntil('\r');
+    message+="\r";
+  Serial.println(message);
     if(message[0] == '8')
     {
       if(message[2] == '6')
       {
-        analogWrite(Laser, 255);
+        LaserWork(true);
       }
       else if(message[2] == '7')
       {
-        analogWrite(Laser, 0);
+        LaserWork(false);
       }
       else if(message[2] == '8')
       {
@@ -123,38 +136,11 @@ void loop()
       {
         ProcessImage(message);
       }
-      else
-      {
-        SavePartOfImage(message);
-      }
     }
   }
 
   
-  if(digitalRead(Button1))
-  {
-    delay(10);
-        Serial.println("Button1");
-    return;
-  }
- if(digitalRead(Button2))
-  {
-    delay(10);
-        Serial.println("Button2");
-    return;
-  }
-  if(digitalRead(Button3))
-  {
-    delay(10);
-        Serial.println("Button3");
-    return;
-  }
-  if(digitalRead(Button4))
-  {
-    delay(10);
-        Serial.println("Button4");
-    return;
-  }
+ 
   switch(movement)
   {
     case '1':
@@ -212,15 +198,27 @@ void SavePartOfImage(String message)
   int nRead = 1000;
   if(numberPackets == 1)
   {
-    nRead = lastPacketSize;
+        if(lastPacketSize%8==0)
+        {
+          nRead = lastPacketSize / 8;
+        }
+        else
+        {
+          nRead = lastPacketSize / 8 + 1;
+        }
   }
+    Serial.println(numberPackets);
+    Serial.println(nRead);
   for(int i = 0; i < nRead + 0; i++)
   {
     myFile.print(message[i]);
+    Serial.println(message[i]);
   }
+  numberPackets--;
   if(numberPackets == 0)
   {
     isSavingImage = false;
+    Serial.println("end");
     myFile.close();
   }
 }
@@ -314,10 +312,14 @@ void ProcessImage(String line)
 {
   isSavingImage = true;
   int i = 2;
-  int width = GetNumberFromString(line,&i,'*');
-  int height = GetNumberFromString(line,&i,'*');
-  numberPackets = GetNumberFromString(line,&i,'*');
-  lastPacketSize = GetNumberFromString(line,&i,'*');
+  int width = GetNumberFromString(line,i);
+    i++;
+  int height = GetNumberFromString(line,i);
+    i++;
+  numberPackets = GetNumberFromString(line,i);
+    i++;
+  lastPacketSize = GetNumberFromString(line,i);
+    i++;
   String fileName = "";
   while(true)
   {
@@ -328,27 +330,25 @@ void ProcessImage(String line)
     fileName += line[i];
     i++;
   }
-  fileName = "test.txt";
   myFile = SD.open(fileName, FILE_WRITE);
   myFile.println(width);
   myFile.println(height);
 }
-int GetNumberFromString(String line, int *i, char symbol)
+int GetNumberFromString(String line, int &i)
 {
   int number = 0;
   while(true)
   {
-    if(line[*i]==symbol)
+    if(line[i]=='*')
     {
       break;
     }
     number *= 10;
-    number += (line[*i] - '0');
-    *i++;
+    number += (line[i] - '0');
+    i++;
   }
   return number;
 }
-
 
 
 void Mottor1Move(bool dir)

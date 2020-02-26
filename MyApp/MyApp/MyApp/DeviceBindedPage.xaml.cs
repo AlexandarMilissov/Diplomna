@@ -72,8 +72,8 @@ namespace MyApp
                 return;
             }
             string s = si.ToJSON();
-            File.WriteAllText(System.Environment.GetFolderPath(
-                System.Environment.SpecialFolder.Personal) + "temp.txt", s);
+            //File.WriteAllText(System.Environment.GetFolderPath(
+            //    System.Environment.SpecialFolder.Personal) + "temp.txt", s);
         }
 
         void CommandButtonClicked(object sender, EventArgs e)

@@ -75,10 +75,17 @@ void loop()
       int nReads = 1002;
       if(numberPackets == 1)
       {
-        nReads = lastPacketSize + 2;
+        if(lastPacketSize%8==0)
+        {
+          nReads = lastPacketSize / 8 + 2;
+        }
+        else
+        {
+          nReads = lastPacketSize / 8 + 3;
+        }
       }
       numberPackets--;
-      for(int i = 0; i < nReads; i ++)
+      for(int i = 2; i < nReads; i++)
       {
         char c = client.read();
         Serial.write(c);
@@ -113,11 +120,11 @@ void ProcessMessage(String line)
       case '6':
         ProcessImage(line);
         Serial.print(line);
-        Serial.printf("\0");
+        Serial.printf("\r");
         break;
       case '8':
         Serial.print(line);
-        Serial.printf("\0");
+        Serial.printf("\r");
         break;
       case 'a':
         LastTimeReceived = millis();
@@ -131,18 +138,13 @@ void ProcessImage(String line)
   isSavingImage = true;
   int i = 2;
   int width = GetNumberFromString(line,i);
+  i++;
   int height = GetNumberFromString(line,i);
+  i++;
   numberPackets = GetNumberFromString(line,i);
-  int lastPacketSize = GetNumberFromString(line,i);
-
-  Serial.println("");
-  Serial.println(width);
-  Serial.println(height);
-  Serial.println(numberPackets);
-  Serial.println(lastPacketSize);
-  
-  
-  Serial.print(i);
+  i++;
+  lastPacketSize = GetNumberFromString(line,i);
+  i++;
 }
 int GetNumberFromString(String line, int &i)
 {
