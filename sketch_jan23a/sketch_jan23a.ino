@@ -55,7 +55,6 @@ void loop()
     //drop connection if keepalive is not received
     if(millis() - LastTimeReceived > 4*keepAliveTimer)
     {
-      Serial.println("why");
       client.stop();
       return;
     }
@@ -64,6 +63,8 @@ void loop()
     {
       continue;
     }
+    
+    
     if(!isSavingImage)
     {
       String line = client.readStringUntil('\r');
@@ -71,14 +72,20 @@ void loop()
     }
     else
     {
+      int nReads = 1002;
       if(numberPackets == 1)
       {
-        nReads = lastPacketSize;
+        nReads = lastPacketSize + 2;
       }
       numberPackets--;
-      for(int i = 0; i < 1002; i ++)
+      for(int i = 0; i < nReads; i ++)
       {
-        Serial.write(client.read());
+        char c = client.read();
+        Serial.write(c);
+      }
+      if(numberPackets == 0)
+      {
+        isSavingImage = false;
       }
     }
   }
@@ -104,6 +111,7 @@ void ProcessMessage(String line)
   switch (line[0])
     {
       case '6':
+        ProcessImage(line);
         Serial.print(line);
         Serial.printf("\0");
         break;
@@ -122,33 +130,32 @@ void ProcessImage(String line)
 {
   isSavingImage = true;
   int i = 2;
-  int width = GetNumberFromString(line,&i);
-  int height = GetNumberFromString(line,&i);
-  numberPackets = GetNumberFromString(line,&i);
-  int lastPacketSize = GetNumberFromString(line,&i);
-  String fileName = "";
-  while(true)
-  {
-    if(line[i]=='\r')
-    {
-      break;
-    }
-    fileName += line[i];
-    i++;
-  }
+  int width = GetNumberFromString(line,i);
+  int height = GetNumberFromString(line,i);
+  numberPackets = GetNumberFromString(line,i);
+  int lastPacketSize = GetNumberFromString(line,i);
+
+  Serial.println("");
+  Serial.println(width);
+  Serial.println(height);
+  Serial.println(numberPackets);
+  Serial.println(lastPacketSize);
+  
+  
+  Serial.print(i);
 }
-int GetNumberFromString(String line, int *i)
+int GetNumberFromString(String line, int &i)
 {
   int number = 0;
   while(true)
   {
-    if(line[*i]=='*')
+    if(line[i]=='*')
     {
       break;
     }
     number *= 10;
-    number += (line[*i] - '0');
-    *i++;
+    number += (line[i] - '0');
+    i++;
   }
   return number;
 }

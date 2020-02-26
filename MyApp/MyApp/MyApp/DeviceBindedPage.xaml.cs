@@ -28,15 +28,18 @@ namespace MyApp
             communication.BindDropped();
             await Navigation.PopModalAsync();
         }
-        private async void SelectFileButtonClicked(object sender, EventArgs e)
+        private void SelectFileButtonClicked(object sender, EventArgs e)
         {
-            string s = File.ReadAllText(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + "temp.txt");
+            string s = File.ReadAllText(System.Environment.GetFolderPath(
+                System.Environment.SpecialFolder.Personal) + "temp.txt");
             try
             {
-                imageSelected = new SimpleImage();
-                imageSelected.FromJSON(s);
+                imageSelected = new SimpleImage(s);
             }
-            catch{ }
+            catch(Exception ex)
+            {
+                string t = ex.Message;
+            }
         }
 
         private void SendFileButtonClicked(object sender, EventArgs e)
@@ -63,49 +66,25 @@ namespace MyApp
                     imageSelected = si;
                 }
             }
-            catch 
+            catch(Exception ex) 
             {
+                string t = ex.Message;
                 return;
             }
             string s = si.ToJSON();
-            File.WriteAllText(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + "temp.txt", s);
+            File.WriteAllText(System.Environment.GetFolderPath(
+                System.Environment.SpecialFolder.Personal) + "temp.txt", s);
         }
 
-
-        private void CommandButtonClicked1(object sender, EventArgs e)
+        void CommandButtonClicked(object sender, EventArgs e)
         {
-            char command = '1';
-            communication.SendCommand(command);
+            string data = ((Button)sender).BindingContext as string;
+            communication.SendCommand(data);
         }
-        private void CommandButtonClicked2(object sender, EventArgs e)
+        void PrintButtonClicked(object sender, EventArgs e)
         {
-            char command = '2';
-            communication.SendCommand(command);
-        }
-        private void CommandButtonClicked3(object sender, EventArgs e)
-        {
-            char command = '3';
-            communication.SendCommand(command);
-        }
-        private void CommandButtonClicked4(object sender, EventArgs e)
-        {
-            char command = '4';
-            communication.SendCommand(command);
-        }
-        private void CommandButtonClicked5(object sender, EventArgs e)
-        {
-            char command = '5';
-            communication.SendCommand(command);
-        }
-        private void CommandButtonClicked6(object sender, EventArgs e)
-        {
-            char command = '6';
-            communication.SendCommand(command);
-        }
-        private void CommandButtonClicked7(object sender, EventArgs e)
-        {
-            char command = '7';
-            communication.SendCommand(command);
+            string fileName = Entry.Text;
+            communication.SendCommand(fileName);
         }
     }
 }

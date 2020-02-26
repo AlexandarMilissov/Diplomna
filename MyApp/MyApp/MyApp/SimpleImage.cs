@@ -16,19 +16,18 @@ namespace MyApp
         public Int16 width;
         public Int16 height;
         public List<byte> image; 
+        
         public SimpleImage()
         {
+
+        }
+        public SimpleImage(string json)
+        {
+            FromJSON(json);
         }
         public SimpleImage(FileData file)
         {
             FromFile(file);
-        }
-        public string ToDigitString()
-        {
-            var builder = new StringBuilder();
-            foreach (var bit in image.Cast<bool>())
-                builder.Append(bit ? "1" : "0");
-            return builder.ToString();
         }
 
 
@@ -117,7 +116,7 @@ namespace MyApp
             JsonConvert.SerializeObject(this);
             return json;
         }
-        public void FromJSON(Stream file)
+        private void FromJSON(Stream file)
         {
             StreamReader reader = new StreamReader(file);
             string json = reader.ReadToEnd();
@@ -139,20 +138,28 @@ namespace MyApp
             List<byte> result = new List<byte>();
 
             int size = arr.Length;
-            int addition = size % 8;
+            int addition = 8 - size % 8;
+            if(addition == 8)
+            {
+                addition = 0;
+            }
             bool[] temp = new bool[8];
             for (int i = 0; i < size;)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if(i == size)
+                    if(i >= size)
                     {
                         for(int k = 0; k < addition; k++)
                         {
                             temp[j + k] = false;
                         }
+                        break;
                     }
-                    temp[j] = arr[i];
+                    else
+                    {
+                        temp[j] = arr[i];
+                    }
                     i++;
                 }
                 result.Add(EncodeBool(temp));

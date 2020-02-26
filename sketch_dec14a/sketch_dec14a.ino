@@ -10,6 +10,7 @@
 #define Motor2Dir 6
 #define Motor2Step 7
 #define TimeDelay 1
+#define timeToWork 10
 
 #define Laser 9
 
@@ -34,19 +35,19 @@ void setup() {
   pinMode(Motor1Dir,OUTPUT);
   pinMode(Motor2Step,OUTPUT);
   pinMode(Motor2Dir,OUTPUT);
-  SD.begin(CS);
   pinMode(Button1,INPUT);
   pinMode(Button2,INPUT);
   pinMode(Button3,INPUT);
   pinMode(Button4,INPUT);
   
+  SD.begin(CS);
   Serial.begin(9600);
-  while (!Serial) {
-  }
+  delay(1000);
 
   mySerial.begin(9600);
+  pinMode(13,OUTPUT);
 
-  ResetMotors();
+//  ResetMotors();
 }
 
 /*
@@ -83,6 +84,7 @@ void loop()
         message += c;
       }
       SavePartOfImage(message);
+      return;
     }
     String message = mySerial.readString();
     if(message[0] == '8')
@@ -127,21 +129,79 @@ void loop()
       }
     }
   }
+
+  
+  if(digitalRead(Button1))
+  {
+    delay(10);
+        Serial.println("Button1");
+    return;
+  }
+ if(digitalRead(Button2))
+  {
+    delay(10);
+        Serial.println("Button2");
+    return;
+  }
+  if(digitalRead(Button3))
+  {
+    delay(10);
+        Serial.println("Button3");
+    return;
+  }
+  if(digitalRead(Button4))
+  {
+    delay(10);
+        Serial.println("Button4");
+    return;
+  }
   switch(movement)
   {
     case '1':
-      Mottor1Move(true);
+      if(!digitalRead(Button4))
+      {
+       Mottor1Move(true);
+      }
+      else
+      {
+        delay(10);
+        Serial.println("Button4");
+      }
       break;
     case '2':
-      Mottor2Move(false);
+      if(!digitalRead(Button1))
+      {
+        Mottor2Move(false);
+      }
+      else
+      {
+        delay(10);
+        Serial.println("Button1");
+      }
       break;
     case '3':
       break;
     case '4':
-      Mottor2Move(true);
+      if(!digitalRead(Button3))
+      {
+        Mottor2Move(true);
+      }
+      else
+      {
+        delay(10);
+        Serial.println("Button3");
+      }
       break;
     case '5':
-      Mottor1Move(false);
+      if(!digitalRead(Button2))
+      {
+        Mottor1Move(false);
+      }
+      else
+      {
+        delay(10);
+        Serial.println("Button2");
+      }
       break;
     default:
       break;
@@ -149,7 +209,12 @@ void loop()
 }
 void SavePartOfImage(String message)
 {
-  for(int i = 0; i < lastPacketSize + 0; i++)
+  int nRead = 1000;
+  if(numberPackets == 1)
+  {
+    nRead = lastPacketSize;
+  }
+  for(int i = 0; i < nRead + 0; i++)
   {
     myFile.print(message[i]);
   }
@@ -195,14 +260,8 @@ void DrawImage(String fileName)
   bool curr = next8 & 1;
   next8>>1;
   bool next = next8 & 1;
-  if(curr)
-  {
-     analogWrite(Laser, 255);
-  }
-  else
-  {
-    analogWrite(Laser, 0);
-  }
+  LaserWork(curr);
+  delay(timeToWork);
   for(int i = 0; i < width; i++)
   {
     for(int j = 0; j < height; j++)
@@ -238,8 +297,8 @@ void DrawImage(String fileName)
   }
   ResetMotors();
   myFile.close();
-  
 }
+
 void LaserWork(bool work)
 {
   if(work)
@@ -269,6 +328,7 @@ void ProcessImage(String line)
     fileName += line[i];
     i++;
   }
+  fileName = "test.txt";
   myFile = SD.open(fileName, FILE_WRITE);
   myFile.println(width);
   myFile.println(height);
@@ -344,6 +404,7 @@ void Mottor2Step(bool dir)
 
 void ResetMotors()
 {
+  Serial.println("reseting motors");
   ResetMotor1();
   ResetMotor2();
 }

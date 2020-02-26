@@ -16,17 +16,19 @@
                     <Button Text="Select File To Send" Clicked="SelectFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
                     <Button Text="Send File" Clicked="SendFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </StackLayout>
+                <Entry x:Name="Entry" />
+                <Button Text="Print" Clicked="PrintButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
 
 
-                    <Button Text="Up" Clicked="CommandButtonClicked1" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Up" Clicked="CommandButtonClicked" BindingContext="1" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
-                    <Button Text="Left" Clicked="CommandButtonClicked2" HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Button Text="Stop" Clicked="CommandButtonClicked3" HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Button Text="Right" Clicked="CommandButtonClicked4" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Left" Clicked="CommandButtonClicked" BindingContext="2" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Stop" Clicked="CommandButtonClicked" BindingContext="3" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Right" Clicked="CommandButtonClicked" BindingContext="4" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </StackLayout>
-                <Button Text="Down" Clicked="CommandButtonClicked5" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Button Text="Start" Clicked="CommandButtonClicked6" HorizontalOptions="Center" VerticalOptions="Center"/>
-                <Button Text="End" Clicked="CommandButtonClicked7" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Down" Clicked="CommandButtonClicked" BindingContext="5" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Start" Clicked="CommandButtonClicked" BindingContext="6" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="End" Clicked="CommandButtonClicked" BindingContext="7" HorizontalOptions="Center" VerticalOptions="Center"/>
 
 
             </StackLayout>

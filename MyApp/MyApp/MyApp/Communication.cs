@@ -32,6 +32,7 @@ namespace MyApp
         {
             mainPage = m;
             currentPage = m;
+            StartUDPReceive();
         }
 
         public async void StartUDPReceive()
@@ -42,22 +43,12 @@ namespace MyApp
                 string data = Encoding.UTF8.GetString(args.ByteData, 0, args.ByteData.Length);
 
                 List<string> info = data.Split('*').ToList();
-
-                switch (info[0])
+                if(info[0] == "1")
                 {
-                    case "0":
-                        break;
-                    case "1":
-                        ReceivedDiscoverReply(IPAddress.Parse(args.RemoteAddress), info.Skip(1).ToList());
-                        break;
-                    case "a":
-                        break;
-                    default:
-                        break;
-                };
+                    ReceivedDiscoverReply(IPAddress.Parse(args.RemoteAddress), info.Skip(1).ToList());
+                }
             };
         }
-
         private void ReceivedDiscoverReply(IPAddress DeviceIP, List<string> UDPcontent)
         {
             Device d = new Device(UDPcontent[0], DeviceIP);
@@ -65,7 +56,8 @@ namespace MyApp
         }
         private void TcpReceive(object data)
         {
-            while(true)
+            string s = "";
+            while (true)
             {
                 int nextByte = tcpClient.ReadStream.ReadByte();
                 switch (nextByte)
@@ -75,9 +67,11 @@ namespace MyApp
                     case (int)'a':
                         KeepAliveReceived();
                         break;
+                    default:
+                        s += nextByte;
+                        break;
                 }
 
-                string s = "";
             }
         }
         private void KeepAliveReceived()
@@ -93,6 +87,7 @@ namespace MyApp
             bindedDevice = null;
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             timer.Dispose();
+            tcpReceive.Abort();
             Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
             {
                 currentPage.Navigation.PopModalAsync();
@@ -150,7 +145,7 @@ namespace MyApp
             tcpReceive = new Thread(TcpReceive);
             tcpReceive.Start();
         }
-        public async void SendCommand(char command)
+        public async void SendCommand(string command)
         {
             byte[] msg = Encoding.UTF8.GetBytes("8*" + command + "\r");
             tcpClient.WriteStream.Write(msg, 0, msg.Length);
@@ -158,6 +153,8 @@ namespace MyApp
         }
         public async void SendImage(SimpleImage image)
         {
+            timer.Change(Timeout.Infinite, Timeout.Infinite);
+
             int size = image.width * image.height;
             int numberPackets = size / 1000;
             int lastPacketSize = size % 1000;
@@ -185,13 +182,14 @@ namespace MyApp
             string message = "";
             for(int i = 0; i < numberPackets; i++)
             {
-                message = "6*" + i.ToString() + "*";
-                byte[] msgPart = Encoding.UTF8.GetBytes(message).Concat(image.image.Skip(i * 1000).Take(1000).ToArray()).ToArray();
+                message = "6*";
+                byte[] msgPart = Encoding.UTF8.GetBytes(message).Concat(
+                    image.image.Skip(i * 1000).Take(1000).ToArray()).ToArray();
                 tcpClient.WriteStream.Write(msgPart, 0, msgPart.Length);
                 await tcpClient.WriteStream.FlushAsync();
-                Thread.Sleep(50);
+                Thread.Sleep(5);
             }
+            timer.Change(0, keepAliveTimer);
         }
-
     }
 }

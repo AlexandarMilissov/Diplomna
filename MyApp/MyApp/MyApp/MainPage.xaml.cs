@@ -1,4 +1,4 @@
-﻿using Sockets.Plugin;
+﻿ using Sockets.Plugin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,8 +11,6 @@ using Xamarin.Forms;
 
 namespace MyApp
 {
-    // Learn more about making custom code visible in the Xamarin.Forms previewer
-    // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
@@ -23,7 +21,6 @@ namespace MyApp
             BindingContext = viewModel;
             this.InitializeComponent();
             communication = new Communication(this);
-            communication.StartUDPReceive();
         }
         public async void UpdateView()
         {
