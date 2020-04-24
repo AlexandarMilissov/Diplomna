@@ -74,7 +74,6 @@ namespace MyApp
             }
 
             List<bool> final = new List<bool>();
-            BitArray bitArray;
 
             List<byte> row;
             bool[] boolAray;
@@ -90,18 +89,21 @@ namespace MyApp
                     boolAray = new bool[(8 - width % 8) + width];
                 }
 
-                bitArray = new BitArray(row.ToArray());
+                BitArray bitArray = new BitArray(row.ToArray());
                 bitArray.CopyTo(boolAray, 0);
+
+                boolList = boolAray.ToList();
+                for (int j = 0; j < row.Count; j++)
+                {
+                    boolList.AddRange(boolList.Take(8).Reverse().ToList());
+                    boolList.RemoveRange(0, 8);
+                }
 
                 if (width % 8 != 0)
                 {
-                    boolList = boolAray.ToList();
-                    boolList.RemoveRange(0, 8 - width % 8);
+                    boolList.RemoveRange(width, 8 - width % 8);
                 }
-                else
-                {
-                    boolList = boolAray.ToList();
-                }
+
                 final.AddRange(boolList);
             }
 
@@ -113,7 +115,7 @@ namespace MyApp
         public string ToJSON()
         {
             string json =
-            JsonConvert.SerializeObject(this);
+                JsonConvert.SerializeObject(this);
             return json;
         }
         private void FromJSON(Stream file)

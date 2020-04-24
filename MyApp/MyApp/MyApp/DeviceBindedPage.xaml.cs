@@ -84,6 +84,9 @@ namespace MyApp
         void PrintButtonClicked(object sender, EventArgs e)
         {
             string fileName = Entry.Text;
+            if (fileName == null || fileName.Length == 0)
+                fileName = "file.txt";
+            fileName = "8*" + fileName;
             communication.SendCommand(fileName);
         }
     }

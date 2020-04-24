@@ -22,11 +22,11 @@
 
                 <Button Text="Up" Clicked="CommandButtonClicked" BindingContext="1" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
-                    <Button Text="Left" Clicked="CommandButtonClicked" BindingContext="2" HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Button Text="Stop" Clicked="CommandButtonClicked" BindingContext="3" HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Button Text="Right" Clicked="CommandButtonClicked" BindingContext="4" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Left" Clicked="CommandButtonClicked" BindingContext="5" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    <Button Text="Stop" Clicked="CommandButtonClicked" BindingContext="3" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                    <Button Text="Right" Clicked="CommandButtonClicked" BindingContext="2" HorizontalOptions="Center" VerticalOptions="Center"/>
                 </StackLayout>
-                <Button Text="Down" Clicked="CommandButtonClicked" BindingContext="5" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Down" Clicked="CommandButtonClicked" BindingContext="4" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Text="Start" Clicked="CommandButtonClicked" BindingContext="6" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Text="End" Clicked="CommandButtonClicked" BindingContext="7" HorizontalOptions="Center" VerticalOptions="Center"/>
 

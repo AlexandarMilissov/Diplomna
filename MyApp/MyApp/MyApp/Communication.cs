@@ -21,6 +21,7 @@ namespace MyApp
         byte[] receivedMessage = new byte[1600];
 
         Thread tcpReceive;
+        bool isTcpThreadActive = false;
         Timer timer;
         Stopwatch keepAliveWatch = new Stopwatch();
         Device bindedDevice;
@@ -57,21 +58,29 @@ namespace MyApp
         private void TcpReceive(object data)
         {
             string s = "";
-            while (true)
+            while (isTcpThreadActive)
             {
-                int nextByte = tcpClient.ReadStream.ReadByte();
-                switch (nextByte)
+                try
                 {
-                    case -1:
-                        break;
-                    case (int)'a':
-                        KeepAliveReceived();
-                        break;
-                    default:
-                        s += nextByte;
-                        break;
+                    if (!isTcpThreadActive)
+                        return;
+                    int nextByte = tcpClient.ReadStream.ReadByte();
+                    switch (nextByte)
+                    {
+                        case -1:
+                            break;
+                        case (int)'a':
+                            KeepAliveReceived();
+                            break;
+                        default:
+                            s += nextByte;
+                            break;
+                    }
                 }
-
+                catch
+                {
+                    break;
+                }
             }
         }
         private void KeepAliveReceived()
@@ -84,10 +93,14 @@ namespace MyApp
             {
                 bindedDevice.BindActive = false;
             }
+            keepAliveWatch.Reset();
             bindedDevice = null;
             timer.Change(Timeout.Infinite, Timeout.Infinite);
             timer.Dispose();
-            tcpReceive.Abort();
+            isTcpThreadActive = false;
+            tcpClient = null;
+            tcpReceive = null;
+            timer = null;
             Xamarin.Forms.Device.BeginInvokeOnMainThread(() =>
             {
                 currentPage.Navigation.PopModalAsync();
@@ -108,6 +121,7 @@ namespace MyApp
                     bindedDevice.BindActive = false;
                 }
                 await tcpClient.DisconnectAsync();
+                isTcpThreadActive = false;
                 BindDropped();
                 return;
             }
@@ -136,12 +150,13 @@ namespace MyApp
             {
                 mainPage.UpdateView();
             });
-            timer = new Timer(SendKeepAlive, null, 0, keepAliveTimer);
             keepAliveWatch.Start();
+            timer = new Timer(SendKeepAlive, null, 0, keepAliveTimer);
 
             bindedDevice = d;
             bindedDevice.BindActive = true;
 
+            isTcpThreadActive = true;
             tcpReceive = new Thread(TcpReceive);
             tcpReceive.Start();
         }
@@ -155,7 +170,7 @@ namespace MyApp
         {
             timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            int size = image.width * image.height;
+            int size = image.image.Count;
             int numberPackets = size / 1000;
             int lastPacketSize = size % 1000;
             if(lastPacketSize != 0)
@@ -179,15 +194,16 @@ namespace MyApp
             await tcpClient.WriteStream.FlushAsync();
             Thread.Sleep(50);
 
-            string message = "";
-            for(int i = 0; i < numberPackets; i++)
+            List<byte> message = new List<byte>();
+            message.Add((byte)'6');
+            message.Add((byte)'*');
+            for (int i = 0; i < numberPackets; i++)
             {
-                message = "6*";
-                byte[] msgPart = Encoding.UTF8.GetBytes(message).Concat(
-                    image.image.Skip(i * 1000).Take(1000).ToArray()).ToArray();
+                message.AddRange(image.image.Skip(i * 1000).Take(1000));
+                byte[] msgPart = message.ToArray();
                 tcpClient.WriteStream.Write(msgPart, 0, msgPart.Length);
                 await tcpClient.WriteStream.FlushAsync();
-                Thread.Sleep(5);
+                Thread.Sleep(50);
             }
             timer.Change(0, keepAliveTimer);
         }

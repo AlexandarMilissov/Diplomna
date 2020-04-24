@@ -29,6 +29,7 @@ namespace MyApp
         }
         private void Discover_Button_Clicked(object sender, EventArgs e)
         {
+            viewModel.KnownDevices.Clear();
             communication.SendDiscoverMessage();
         }
         private void List_ItemTapped(object sender, ItemTappedEventArgs e)

@@ -22,10 +22,23 @@ int lastPacketSize = 0;
 void setup() 
 {
   
-  Serial.begin(9600);
   WiFi.begin(ssid, password);
+  
+  /*
+    digitalWrite(1,HIGH);
+    delay(1000);
+    digitalWrite(1,LOW);
+  
+  for (int i = 0; i< 5; i++);
+  {
+    delay(500);
+  }
+  */
+ 
+  Serial.begin(9600);
   while (WiFi.status() != WL_CONNECTED)
   {
+    Serial.print('.');
     delay(500);
   }
   Udp.begin(PORT);
@@ -75,14 +88,7 @@ void loop()
       int nReads = 1002;
       if(numberPackets == 1)
       {
-        if(lastPacketSize%8==0)
-        {
-          nReads = lastPacketSize / 8 + 2;
-        }
-        else
-        {
-          nReads = lastPacketSize / 8 + 3;
-        }
+        nReads = lastPacketSize + 2;
       }
       numberPackets--;
       for(int i = 2; i < nReads; i++)
@@ -118,9 +124,9 @@ void ProcessMessage(String line)
   switch (line[0])
     {
       case '6':
-        ProcessImage(line);
         Serial.print(line);
         Serial.printf("\r");
+        ProcessImage(line);
         break;
       case '8':
         Serial.print(line);
