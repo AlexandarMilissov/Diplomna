@@ -98,13 +98,15 @@ namespace MyApp
                     boolList.AddRange(boolList.Take(8).Reverse().ToList());
                     boolList.RemoveRange(0, 8);
                 }
+                boolList.Reverse();
 
                 if (width % 8 != 0)
                 {
                     boolList.RemoveRange(width, 8 - width % 8);
                 }
-
+                final.Reverse();
                 final.AddRange(boolList);
+                final.Reverse();
             }
 
             this.width = width;

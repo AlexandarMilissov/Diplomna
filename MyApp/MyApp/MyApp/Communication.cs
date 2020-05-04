@@ -18,7 +18,6 @@ namespace MyApp
         UdpSocketClient udpClient = new UdpSocketClient();
         UdpSocketReceiver udpReceiver = new UdpSocketReceiver();
         TcpSocketClient tcpClient;
-        byte[] receivedMessage = new byte[1600];
 
         Thread tcpReceive;
         bool isTcpThreadActive = false;
@@ -166,45 +165,49 @@ namespace MyApp
             tcpClient.WriteStream.Write(msg, 0, msg.Length);
             await tcpClient.WriteStream.FlushAsync();
         }
-        public async void SendImage(SimpleImage image)
+        public async void SendImage(SimpleImage image, string name)
         {
             timer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            int size = image.image.Count;
-            int numberPackets = size / 1000;
-            int lastPacketSize = size % 1000;
-            if(lastPacketSize != 0)
+            if (name == null || name.Length == 0)
             {
-                numberPackets++;
+                name ="file.txt";
             }
-
             string start =  "6*" + 
 							image.width.ToString() + 
 							"*" + 
 							image.height.ToString() + 
 							"*" + 
-							numberPackets.ToString() + 
-							"*" + 
-							lastPacketSize.ToString() + 
-							"*" + 
-							"file.txt" + 
+                            name + 
 							"\r";
+
             byte[] msg = Encoding.UTF8.GetBytes(start);
             tcpClient.WriteStream.Write(msg, 0, msg.Length);
             await tcpClient.WriteStream.FlushAsync();
             Thread.Sleep(50);
 
-            List<byte> message = new List<byte>();
-            message.Add((byte)'6');
-            message.Add((byte)'*');
+            /*List<byte> message;
             for (int i = 0; i < numberPackets; i++)
             {
-                message.AddRange(image.image.Skip(i * 1000).Take(1000));
+                message = new List<byte>();
+                message.Add((byte)'6');
+                message.Add((byte)'*');
+                message.AddRange(image.image.Skip(i * maxImageSize).Take(maxImageSize));
+                keepAliveWatch.Reset();
                 byte[] msgPart = message.ToArray();
                 tcpClient.WriteStream.Write(msgPart, 0, msgPart.Length);
                 await tcpClient.WriteStream.FlushAsync();
-                Thread.Sleep(50);
+                //Thread.Sleep(50);
+            }*/
+            byte[] message = image.image.ToArray();
+            tcpClient.WriteStream.Write(message, 0, message.Length);
+            await tcpClient.WriteStream.FlushAsync();
+            for(int i = 0; i < image.image.Count / 5000; i++)
+            {
+                keepAliveWatch.Reset();
+                Thread.Sleep(500);
             }
+
             timer.Change(0, keepAliveTimer);
         }
     }

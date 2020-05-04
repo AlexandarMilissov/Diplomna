@@ -48,7 +48,7 @@ namespace MyApp
             {
                 return;
             }
-            communication.SendImage(imageSelected);
+            communication.SendImage(imageSelected, Entry.Text);
         }
         private async void TransformFileButtonClicked(object sender, EventArgs e)
         {
@@ -61,10 +61,7 @@ namespace MyApp
             try
             {
                 si = new SimpleImage(file);
-                if(imageSelected == null)
-                {
-                    imageSelected = si;
-                }
+                imageSelected = si;
             }
             catch(Exception ex) 
             {
@@ -79,6 +76,12 @@ namespace MyApp
         void CommandButtonClicked(object sender, EventArgs e)
         {
             string data = ((Button)sender).BindingContext as string;
+            communication.SendCommand(data);
+        }
+        
+        void TimeButtonClicked(object sender, EventArgs e)
+        {
+            string data = "9*" + time.Text + "*";
             communication.SendCommand(data);
         }
         void PrintButtonClicked(object sender, EventArgs e)

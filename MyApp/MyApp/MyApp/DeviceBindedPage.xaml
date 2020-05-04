@@ -30,6 +30,11 @@
                 <Button Text="Start" Clicked="CommandButtonClicked" BindingContext="6" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Button Text="End" Clicked="CommandButtonClicked" BindingContext="7" HorizontalOptions="Center" VerticalOptions="Center"/>
 
+                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
+                    <Entry x:Name="time" Keyboard="Numeric"/>
+                    <Button Text=">" Clicked="TimeButtonClicked" BindingContext="8" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                </StackLayout>
+
 
             </StackLayout>
             <Button Text="Back"

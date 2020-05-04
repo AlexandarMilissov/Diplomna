@@ -17,8 +17,8 @@ unsigned long LastTimeReceived = 0;
 #define keepAliveTimer 2000
 
 bool isSavingImage = false;
-int numberPackets = 0;
-int lastPacketSize = 0;
+int imageSize = 0;
+
 void setup() 
 {
   
@@ -38,14 +38,13 @@ void setup()
   Serial.begin(9600);
   while (WiFi.status() != WL_CONNECTED)
   {
-    Serial.print('.');
     delay(500);
   }
   Udp.begin(PORT);
   server.begin();
   server.setNoDelay(true);
 }
-
+int count = 0;
 void loop()
 {
   CheckForDiscoverMessages();
@@ -60,43 +59,47 @@ void loop()
   
   while (client.connected())
   {
-    //check to see if its time to send keepalive
-    if(millis() - LastTimeSend>keepAliveTimer)
-    {
-      SendKeepAlive();
-    }
-    //drop connection if keepalive is not received
-    if(millis() - LastTimeReceived > 4*keepAliveTimer)
-    {
-      client.stop();
-      return;
-    }
-    //check if there is anything to read
-    if (!client.available())
-    {
-      continue;
-    }
-    
-    
     if(!isSavingImage)
     {
+      //check to see if its time to send keepalive
+      if(millis() - LastTimeSend>keepAliveTimer)
+      {
+        SendKeepAlive();
+      }
+      //drop connection if keepalive is not received
+      if(millis() - LastTimeReceived > 4*keepAliveTimer)
+      {
+        client.stop();
+        return;
+      }
+      //check if there is anything to read
+      if (!client.available())
+      {
+        continue;
+      }
+      
       String line = client.readStringUntil('\r');
       ProcessMessage(line);
     }
     else
     {
-      int nReads = 1002;
-      if(numberPackets == 1)
+      if(client.available() <= 0)
       {
-        nReads = lastPacketSize + 2;
+        continue;
       }
-      numberPackets--;
-      for(int i = 2; i < nReads; i++)
+      LastTimeReceived = millis();
+      char c;
+      while(client.available() > 0 && imageSize > 0)
       {
-        char c = client.read();
+        while(Serial.availableForWrite() <= 1)
+        {
+        }
+        c = client.read();
         Serial.write(c);
+        imageSize--;
       }
-      if(numberPackets == 0)
+      
+      if(imageSize <= 0)
       {
         isSavingImage = false;
       }
@@ -147,10 +150,11 @@ void ProcessImage(String line)
   i++;
   int height = GetNumberFromString(line,i);
   i++;
-  numberPackets = GetNumberFromString(line,i);
-  i++;
-  lastPacketSize = GetNumberFromString(line,i);
-  i++;
+  imageSize = (width * height) / 8;
+  if((width * height) % 8 != 0)
+  {
+      imageSize++;
+  }
 }
 int GetNumberFromString(String line, int &i)
 {

@@ -30,13 +30,13 @@ File myFile;
 
 char movement = '3';
 bool isSavingImage = false;
-int numberPackets = 0;
-int lastPacketSize = 0;
+long imageSize = 0;
 
-int timeToHeatUp = 20;
-int timeToWork = 7;
+#define timeToHeatUp 250
+int timeToWork = 250;
 
-char image[1000];
+int PosX = 0;
+int PosY = 0;
 
 void setup() {
   
@@ -66,42 +66,38 @@ void setup() {
   else
   Serial.println("yes");
 
-  ResetMotors();
 }
 
 void loop()
-{  
-  if (mySerial.available())
+{ 
+  if (mySerial.available() > 0)
   {
     if(isSavingImage)
     {
-        Serial.println(isSavingImage);
-      int nReads = 1000;
-      String message = "";
       char c;
-      if(numberPackets == 1)
-      {
-        nReads = lastPacketSize;
-        Serial.println(nReads);
-      }
-      for(int i = 0; i < nReads; i++)
+          Serial.println(imageSize);
+      while(mySerial.available() > 0 && imageSize > 0)
       {
         c = mySerial.read();
-        if(c==0)
-        {
-          c = '1';
-        }
-        if(c==-1)
-        {
-          i--;
-          continue;
-        }
-        message += c;
+        myFile.write(c);
+        //Serial.write(c);
+        imageSize--;
       }
-      SavePartOfImage(message);
+          Serial.println(imageSize);
+          Serial.println("here");
+          Serial.println();
+      if(imageSize <= 0)
+      {
+        isSavingImage = false;
+        myFile.close();
+          Serial.println("end");
+        while(mySerial.available() > 0 )
+        {
+          c = mySerial.read();
+        }
+      }
       return;
     }
-    
     String message = mySerial.readStringUntil('\r');
     message+="\r";
 
@@ -131,6 +127,11 @@ void loop()
               i++;
             }
             DrawImage(fileName);
+          }
+          else if(message[2] == '9')
+          {
+            int i = 4;
+            timeToWork = GetNumberFromString(message,i);
           }
           else
           {
@@ -209,17 +210,20 @@ void loop()
 }
 void ProcessImage(String line)
 {
+  Serial.println(line);
   isSavingImage = true;
   int i = 2;
-  int width = GetNumberFromString(line,i);
+  long width = GetNumberFromString(line,i);
     i++;
-  int height = GetNumberFromString(line,i);
+  long height = GetNumberFromString(line,i);
     i++;
-  numberPackets = GetNumberFromString(line,i);
-    i++;
-  lastPacketSize = GetNumberFromString(line,i);
-    i++;
+  imageSize = (width * height) / 8;
+  if((width * height) % 8 != 0)
+  {
+      imageSize++;
+  }
   String fileName = "";
+  
   while(true)
   {
     if(line[i]=='\r')
@@ -234,26 +238,7 @@ void ProcessImage(String line)
   myFile.println(width);
   myFile.println(height);
 }
-void SavePartOfImage(String message)
-{
-  int nRead = 1000;
-  if(numberPackets == 1)
-  {
-      nRead = lastPacketSize;
-  }
-  
-  for(int i = 0; i < nRead + 0; i++)
-  {
-    myFile.print(message[i]);
-  }
-  numberPackets--;
-  
-  if(numberPackets == 0)
-  {
-    isSavingImage = false;
-    myFile.close();
-  }
-}
+
 int GetNumberFromString(String line, int &i)
 {
   int number = 0;
@@ -272,9 +257,11 @@ int GetNumberFromString(String line, int &i)
 
 void DrawImage(String fileName)
 {
+  ResetMotors();
   myFile = SD.open(fileName, FILE_READ);
   if(!myFile)
   {
+    //failed to open file
     return;
   }
   int width = 0;
@@ -286,8 +273,8 @@ void DrawImage(String fileName)
     {
       continue;
     }
-    width *= 10;
-    width += (c - '0');
+    height *= 10;
+    height += (c - '0');
     c = myFile.read();
   }
   c = myFile.read();
@@ -299,34 +286,27 @@ void DrawImage(String fileName)
     {
       continue;
     }
-    height *= 10;
-    height += (c - '0');
+    width *= 10;
+    width += (c - '0');
     c = myFile.read();
   }
   c = myFile.read();
 
 
-  byte next8 = myFile.read();
-  
-              /*Serial.print("|");
-              Serial.print(next8);
-              Serial.print("| ");*/
-  int nextPos = 1;
-  bool curr = next8 & 128;
-  
-              if(curr)
-                Serial.print("1 ");
-              else
-                Serial.print("0 ");
-  next8 = next8<<1;
-  bool next = next8 & 128;
-  //Serial.println(next8);
+  byte byteToRead = myFile.read();
+  int currPos = 0;
+  bool curr = byteToRead & 128;
+  curr = !curr;
+  byteToRead = byteToRead<<1;
+  bool prev;
 
   
-  int j = 1;
+  int j = 0;
+  int toBeX = 0;
+  int toBeY = 0;
+
   for(int i = 0; i < width; i++)
   {
-    LaserWork(next);
     for(; j < height; j++)
     {
       if(mySerial.available() > 0) 
@@ -335,59 +315,73 @@ void DrawImage(String fileName)
         myFile.close();
         return;
       }
-      
-      if(Serial.read() == 'e')
+      toBeY++;
+
+
+        Serial.print(curr);
+      if(curr)
       {
-        LaserWork(false);
-        myFile.close();
-        return;
+        MoveTo(toBeX, toBeY);
+        LaserWork(true);
+        if(!prev || j == 0)
+        {
+          delay(timeToHeatUp);
+        }
+        delay(timeToWork);
+      }
+      else //!curr
+      {
+        if(prev)
+        {
+          LaserWork(false);
+        }
       }
 
       
-      if(next != curr)
+      prev = curr;
+      if(currPos == 7)
       {
-        LaserWork(next);
-      } 
-      
-      Mottor2Step(true,timeToWork);
-      curr = next;
-      
-              if(curr)
-                Serial.print("1 ");
-              else
-                Serial.print("0 ");
-                
-      if(nextPos == 7)
-      {
-        next8 = myFile.read();
-        nextPos = 0;
-        
-              //Serial.print("|| ");
+        byteToRead = myFile.read();
+        currPos = 0;
       }
       else
       {
-        nextPos++;
+        currPos++;
       }
-      next = next8 & 128;
-            /*if(nextPos == 0)
-            {
-              Serial.print("|");
-              Serial.print(next8);
-              Serial.print("| ");
-            }*/
-      next8 = next8<<1;
+      curr = byteToRead & 128;
+      curr = !curr;
+      byteToRead = byteToRead<<1;
       
-      if(digitalRead(Button1))
+      
+      if(digitalRead(Button1) || toBeY >= height)
       {
+        toBeY = 0;
+        while(j < height - 1)
+        {
+          prev = curr;
+          if(currPos == 7)
+          {
+            byteToRead = myFile.read();
+            currPos = 0;
+          }
+          else
+          {
+            currPos++;
+          }
+          curr = byteToRead & 128;
+          byteToRead = byteToRead<<1;
+    
+          j++;
+        }
         break;
       }
     }
+    
+        Serial.println();
     LaserWork(false);
-    ResetMotor2();
-    Mottor1Step(false);
+    toBeX++;
     j = 0;
-    Serial.println();
-    if(digitalRead(Button2))
+    if(digitalRead(Button2) || toBeX >= width)
     {
       break;
     }
@@ -401,7 +395,6 @@ void LaserWork(bool work)
   if(work)
   {
      analogWrite(Laser, 255);
-     delay(timeToWork);
   }
   else
   {
@@ -409,7 +402,35 @@ void LaserWork(bool work)
   }
 }
 
-
+void MoveTo(int NewX, int NewY)
+{
+  while(PosX != NewX)
+  {
+    if(PosX < NewX)
+    {
+      Mottor1Step(false);
+      PosX++;
+    }
+    else
+    {
+      Mottor1Step(true);
+      PosX--;
+    }
+  }
+  while(PosY != NewY)
+  {
+    if(PosY < NewY)
+    {
+      Mottor2Step(true);
+      PosY++;
+    }
+    else
+    {
+      Mottor2Step(false);
+      PosY--;
+    }
+  }
+}
 
 
 void Mottor1Move(bool dir, int moveSpeed)
@@ -433,8 +454,9 @@ void ResetMotor1()
 {
   while(!digitalRead(Button4))
   {
-    Mottor1Move(true,1);
+    Mottor1Move(true);
   }
+  PosX = 0;
 }
 void Mottor1Move(bool dir)
 {
@@ -475,8 +497,9 @@ void ResetMotor2()
 {
   while(!digitalRead(Button3))
   {
-    Mottor2Move(false,1);
+    Mottor2Move(false);
   }
+  PosY = 0;
 }
 void Mottor2Move(bool dir)
 {
