@@ -8,14 +8,10 @@
     <ContentPage.Content>
         <StackLayout>
             <StackLayout VerticalOptions="StartAndExpand">
-                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
-                    <Button Text="Transform File" Clicked="TransformFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </StackLayout>
-
-                <StackLayout HorizontalOptions="CenterAndExpand" Orientation = "Horizontal">
-                    <Button Text="Select File To Send" Clicked="SelectFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
-                    <Button Text="Send File" Clicked="SendFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
-                </StackLayout>
+                
+                <Button Text="Transform File" Clicked="TransformFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Button Text="Send File" Clicked="SendFileButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
+                
                 <Entry x:Name="Entry" />
                 <Button Text="Print" Clicked="PrintButtonClicked" HorizontalOptions="Center" VerticalOptions="Center"/>
 

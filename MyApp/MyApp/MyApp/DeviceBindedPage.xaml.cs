@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace MyApp
+namespace MyApp 
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DeviceBindedPage : ContentPage
@@ -28,20 +28,6 @@ namespace MyApp
             communication.BindDropped();
             await Navigation.PopModalAsync();
         }
-        private void SelectFileButtonClicked(object sender, EventArgs e)
-        {
-            string s = File.ReadAllText(System.Environment.GetFolderPath(
-                System.Environment.SpecialFolder.Personal) + "temp.txt");
-            try
-            {
-                imageSelected = new SimpleImage(s);
-            }
-            catch(Exception ex)
-            {
-                string t = ex.Message;
-            }
-        }
-
         private void SendFileButtonClicked(object sender, EventArgs e)
         {
             if (imageSelected == null)
@@ -68,9 +54,6 @@ namespace MyApp
                 string t = ex.Message;
                 return;
             }
-            string s = si.ToJSON();
-            //File.WriteAllText(System.Environment.GetFolderPath(
-            //    System.Environment.SpecialFolder.Personal) + "temp.txt", s);
         }
 
         void CommandButtonClicked(object sender, EventArgs e)

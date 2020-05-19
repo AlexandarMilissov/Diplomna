@@ -21,10 +21,6 @@ namespace MyApp
         {
 
         }
-        public SimpleImage(string json)
-        {
-            FromJSON(json);
-        }
         public SimpleImage(FileData file)
         {
             FromFile(file);
@@ -102,7 +98,7 @@ namespace MyApp
 
                 if (width % 8 != 0)
                 {
-                    boolList.RemoveRange(width, 8 - width % 8);
+                    boolList.RemoveRange(0, 8 - width % 8);
                 }
                 final.Reverse();
                 final.AddRange(boolList);
@@ -112,29 +108,6 @@ namespace MyApp
             this.width = width;
             this.height = height;
             this.image = EncodeLargeBool(final.ToArray());
-        }
-
-        public string ToJSON()
-        {
-            string json =
-                JsonConvert.SerializeObject(this);
-            return json;
-        }
-        private void FromJSON(Stream file)
-        {
-            StreamReader reader = new StreamReader(file);
-            string json = reader.ReadToEnd();
-            SimpleImage s = JsonConvert.DeserializeObject<SimpleImage>(json);
-            this.height = s.height;
-            this.width = s.width;
-            this.image = s.image;
-        }
-        public void FromJSON(String file)
-        {
-            SimpleImage s = JsonConvert.DeserializeObject<SimpleImage>(file);
-            this.height = s.height;
-            this.width = s.width;
-            this.image = s.image;
         }
 
         List<byte> EncodeLargeBool(bool[] arr)

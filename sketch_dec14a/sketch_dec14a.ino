@@ -10,14 +10,8 @@
 #define Motor2Dir 6
 #define Motor2Step 7
 
-
 #define Laser 9
-/*
-#define Button1 14
-#define Button2 15
-#define Button3 16
-#define Button4 17
-*/
+
 #define Button1 A4
 #define Button2 A1
 #define Button3 A2
@@ -75,16 +69,13 @@ void loop()
     if(isSavingImage)
     {
       char c;
-          Serial.println(imageSize);
       while(mySerial.available() > 0 && imageSize > 0)
       {
         c = mySerial.read();
         myFile.write(c);
-        //Serial.write(c);
+        Serial.print(c);
         imageSize--;
       }
-          Serial.println(imageSize);
-          Serial.println("here");
           Serial.println();
       if(imageSize <= 0)
       {
@@ -257,7 +248,6 @@ int GetNumberFromString(String line, int &i)
 
 void DrawImage(String fileName)
 {
-  ResetMotors();
   myFile = SD.open(fileName, FILE_READ);
   if(!myFile)
   {
@@ -376,8 +366,6 @@ void DrawImage(String fileName)
         break;
       }
     }
-    
-        Serial.println();
     LaserWork(false);
     toBeX++;
     j = 0;
@@ -523,22 +511,3 @@ void ResetMotors()
   ResetMotor1();
   ResetMotor2();
 }
-/*void ResetMotors()
-{
-  ResetMotor1();
-  int i = 0;
-  while(!digitalRead(Button2))
-  {
-    Mottor1Move(false);
-    i++;
-  }
-  Serial.println(i);
-  ResetMotor2();
-  i = 0;
-  while(!digitalRead(Button1))
-  {
-    Mottor2Move(true);
-    i++;
-  }
-  Serial.println(i);
-}*/
