@@ -11,7 +11,7 @@
 
   <Identity
     Name="7192aadf-3ddf-44d4-a970-12398f4ae458"
-    Publisher="CN=5f66c174-d813-4026-929a-9967852319aa"
+    Publisher="CN=alexm"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -48,6 +48,8 @@
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/></uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileSavePicker">

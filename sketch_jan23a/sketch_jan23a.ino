@@ -1,8 +1,12 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
+#define baud 57600
 
-const char* ssid = "ASUS";
-const char* password = "PowerNetwork";
+//const char* ssid = "ASUS";
+//const char* password = "PowerNetwork";
+
+const char* ssid = "Redmi";
+const char* password = "12345678";
 const char* thisDeviceName = "Device1";
 
 unsigned int PORT = 4210;
@@ -35,9 +39,12 @@ void setup()
   }
   */
  
-  Serial.begin(9600);
-  while (WiFi.status() != WL_CONNECTED)
+  Serial.begin(baud);
+  for (int i = 0; i < 20 ; i++)
   {
+    if(WiFi.status() == WL_CONNECTED)
+      break;
+    Serial.print(".");
     delay(500);
   }
   Udp.begin(PORT);
@@ -102,6 +109,8 @@ void loop()
       if(imageSize <= 0)
       {
         isSavingImage = false;
+        /*Serial.println("it works");
+        Serial.println("it works");*/         
       }
     }
   }

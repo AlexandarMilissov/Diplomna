@@ -18,6 +18,7 @@
 #define Button4 A3
 
 #define CS 10
+#define baud 57600
 
 SoftwareSerial mySerial(RX, TX); // RX, TX
 File myFile;
@@ -37,9 +38,8 @@ void setup() {
   pinMode(Laser,OUTPUT);
   LaserWork(false);
   
-  Serial.begin(9600);
-  while (!Serial) {}
-  mySerial.begin(9600);
+  Serial.begin(baud);
+  mySerial.begin(baud);
   delay(1000);
   
   pinMode(Motor1Step,OUTPUT);
@@ -77,6 +77,7 @@ void loop()
         imageSize--;
       }
           Serial.println();
+          Serial.println(imageSize);
       if(imageSize <= 0)
       {
         isSavingImage = false;
@@ -180,6 +181,7 @@ void loop()
       }
       else
       {
+        PosX = 0;
         delay(10);
       }
       break;
@@ -191,6 +193,7 @@ void loop()
       }
       else
       {
+        PosY = 0;
         delay(10);
       }
       break;
@@ -303,6 +306,7 @@ void DrawImage(String fileName)
       {
         LaserWork(false);
         myFile.close();
+        MoveTo(0,0);
         return;
       }
       toBeY++;

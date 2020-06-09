@@ -76,6 +76,10 @@ namespace MyApp
             List<bool> boolList;
             for (int i = 0; i < height; i++)
             {
+                if(i == 129)
+                {
+
+                }
                 row = lb.Take(bytesPerRow).ToList();
                 lb.RemoveRange(0, bytesPerRow + bytesToSkipEachRow);
 
